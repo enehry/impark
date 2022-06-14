@@ -5,21 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class ForecastSetting extends Model
 {
   use HasFactory;
 
   protected $fillable = [
-    'name',
-    'price',
-    'type,',
+    'stock_id',
     'reordering_point',
-    'maximum_shelf_life',
     'default_kg_per_day',
   ];
-
-  public function stocks()
-  {
-    return $this->hasOne(Stock::class);
-  }
 }

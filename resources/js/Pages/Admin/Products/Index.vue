@@ -203,8 +203,8 @@
 import TableLayout from "@/Layouts/TableLayout.vue";
 import { Link, Head } from "@inertiajs/inertia-vue3";
 import Tooltip from "@/Components/Tooltip.vue";
-import JetButton from "@/JetStream/Button.vue";
-import JetConfirmationModal from "@/JetStream/ConfirmationModal.vue";
+import JetButton from "@/Jetstream/Button.vue";
+import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
 import {
@@ -274,6 +274,7 @@ export default {
                 this.$inertia.get(this.route("products.index"), this.params, {
                     preserveState: true,
                     replace: true,
+                    preserveScroll: true,
                 });
             }, 300),
             deep: true,

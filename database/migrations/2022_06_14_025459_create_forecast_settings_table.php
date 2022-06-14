@@ -13,14 +13,11 @@ return new class extends Migration
    */
   public function up()
   {
-    Schema::create('products', function (Blueprint $table) {
+    Schema::create('forecast_settings', function (Blueprint $table) {
       $table->id();
-      $table->string('name');
-      $table->enum('type', ['beef', 'chicken', 'pork']);
-      $table->double('price');
-      $table->integer('reordering_point')->default(20);
-      $table->integer('maximum_shelf_life')->default(4);
-      $table->integer('default_kg_per_day')->default(50);
+      $table->unsignedBigInteger('stock_id');
+      $table->integer('default_kg_per_day');
+      $table->integer('reordering_point');
       $table->timestamps();
     });
   }
@@ -32,6 +29,6 @@ return new class extends Migration
    */
   public function down()
   {
-    Schema::dropIfExists('products');
+    Schema::dropIfExists('forecast_settings');
   }
 };

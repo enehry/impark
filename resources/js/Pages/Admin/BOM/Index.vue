@@ -191,11 +191,11 @@
 import TableLayout from "@/Layouts/TableLayout.vue";
 import { Link, Head } from "@inertiajs/inertia-vue3";
 import Tooltip from "@/Components/Tooltip.vue";
-import JetButton from "@/JetStream/Button.vue";
-import JetConfirmationModal from "@/JetStream/ConfirmationModal.vue";
+import JetButton from "@/Jetstream/Button.vue";
+import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
-import JetModal from "@/JetStream/Modal.vue";
+import JetModal from "@/Jetstream/Modal.vue";
 import TableRow from "@/Components/TableRow.vue";
 import {
     PlusIcon,

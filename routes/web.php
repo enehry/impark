@@ -4,8 +4,9 @@ use App\Http\Controllers\BOMController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
-use Illuminate\Foundation\Application;
+use App\Http\Controllers\IssueProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -40,6 +41,11 @@ Route::middleware([
   });
 
   Route::middleware('user')->group(function () {
+    Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
+    Route::post('/stocks/update-forecast-setting', [StockController::class, 'updateOrCreateForecastSetting'])->name('stocks.forecast.update');
+    Route::get('/stocks/export-pdf', [StockController::class, 'exportPDF'])->name('stocks.export.pdf');
+    Route::get('/stocks/export-excel', [StockController::class, 'exportExcel'])->name('stocks.export.excel');
+    Route::resource('/issue-products', IssueProductController::class);
   });
 
   // Route::get('/', function () {
