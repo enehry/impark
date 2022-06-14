@@ -1,0 +1,285 @@
+<template>
+    <table-layout title="Products">
+        <Head title="Products" />
+
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
+            <div
+                class="flex justify-between items-center p-4 bg-white dark:bg-gray-800"
+            >
+                <label for="table-search" class="sr-only">Search</label>
+                <div class="relative mt-1">
+                    <div
+                        class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+                    >
+                        <svg
+                            class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                            fill="currentColor"
+                            viewBox="0 0 20 20"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd"
+                            ></path>
+                        </svg>
+                    </div>
+                    <input
+                        v-model="params.search"
+                        type="text"
+                        id="table-search"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        placeholder="Search for products"
+                    />
+                </div>
+                <div class="flex gap-2">
+                    <Link>
+                        <button class="bg-blue-500 text-white p-2 rounded-full">
+                            <DocumentTextIcon class="w-4 h-4" />
+                        </button>
+                    </Link>
+                    <Link
+                        data-tooltip-target="tooltip-create-product"
+                        :href="route('products.create')"
+                    >
+                        <button
+                            class="bg-green-500 text-white p-2 rounded-full"
+                        >
+                            <PlusIcon class="w-4 h-4" />
+                        </button>
+                    </Link>
+
+                    <tooltip
+                        id="tooltip-create-product"
+                        label="Create New Product"
+                    ></tooltip>
+                </div>
+            </div>
+            <table
+                class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
+            >
+                <thead
+                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400"
+                >
+                    <tr>
+                        <th scope="col" class="px-6 py-3 cursor-pointer">
+                            <span
+                                class="flex gap-1"
+                                @click.prevent="sort('name')"
+                                >Product name
+                                <div class="w-4 h-4">
+                                    <sort-ascending-icon
+                                        v-if="
+                                            params.field === 'name' &&
+                                            params.direction === 'asc'
+                                        "
+                                    />
+                                    <sort-descending-icon
+                                        v-if="
+                                            params.field === 'name' &&
+                                            params.direction === 'desc'
+                                        "
+                                    />
+                                </div>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3 cursor-pointer">
+                            <span
+                                class="flex gap-1"
+                                @click.prevent="sort('type')"
+                                >Type
+                                <div class="w-4 h-4">
+                                    <sort-ascending-icon
+                                        v-if="
+                                            params.field === 'type' &&
+                                            params.direction === 'asc'
+                                        "
+                                    />
+                                    <sort-descending-icon
+                                        v-if="
+                                            params.field === 'type' &&
+                                            params.direction === 'desc'
+                                        "
+                                    />
+                                </div>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3 cursor-pointer">
+                            <span
+                                class="flex gap-1"
+                                @click.prevent="sort('price')"
+                                >Price
+                                <div class="w-4 h-4">
+                                    <sort-ascending-icon
+                                        v-if="
+                                            params.field === 'price' &&
+                                            params.direction === 'asc'
+                                        "
+                                    />
+                                    <sort-descending-icon
+                                        v-if="
+                                            params.field === 'price' &&
+                                            params.direction === 'desc'
+                                        "
+                                    />
+                                </div>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3">Stocks</th>
+                        <th scope="col" class="px-6 py-3">ROP</th>
+                        <th scope="col" class="px-6 py-3">
+                            Maximum <br />
+                            Shelf Life
+                        </th>
+                        <th scope="col" class="px-6 py-3">
+                            <span class="sr-only">Edit</span>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr
+                        v-for="product in products.data"
+                        :key="product.id"
+                        class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                    >
+                        <th
+                            scope="row"
+                            class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
+                        >
+                            {{ product.name }}
+                        </th>
+                        <td class="px-6 py-4 uppercase">{{ product.type }}</td>
+                        <td class="px-6 py-4">{{ product.price }}</td>
+                        <td class="px-6 py-4">0</td>
+                        <td class="px-6 py-4">
+                            {{ product.reordering_point }}
+                        </td>
+                        <td class="px-6 py-4">
+                            {{ product.maximum_shelf_life }}
+                        </td>
+                        <td class="flex items-center gap-4 py-4 pr-4">
+                            <Link
+                                :href="route('products.edit', { product })"
+                                class="font-medium text-blue-600 dark:text-blue-500"
+                                ><PencilIcon class="w-4 h-4"
+                            /></Link>
+
+                            <button
+                                @click.prevent="openConfirmation(product.id)"
+                                class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                            >
+                                <TrashIcon class="w-4 h-4"></TrashIcon>
+                            </button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <pagination :links="products.links" />
+        <jet-confirmation-modal :show="isShow">
+            <template #title>
+                <h1 class="font-medium">
+                    Are you sure you want to delete this product ?
+                </h1>
+            </template>
+            <template #content>
+                You are about to delete this product. This action cannot be
+                undone.
+            </template>
+            <template #footer>
+                <button
+                    @click="isShow = false"
+                    class="border-2 border-red-500 hover:bg-red-500 hover:text-white text-red-500 font-medium rounded-md px-2 mr-2"
+                >
+                    Cancel
+                </button>
+                <jet-button @click.prevent="destroy()">OK</jet-button>
+            </template>
+        </jet-confirmation-modal>
+    </table-layout>
+</template>
+
+<script>
+import TableLayout from "@/Layouts/TableLayout.vue";
+import { Link, Head } from "@inertiajs/inertia-vue3";
+import Tooltip from "@/Components/Tooltip.vue";
+import JetButton from "@/JetStream/Button.vue";
+import JetConfirmationModal from "@/JetStream/ConfirmationModal.vue";
+import Pagination from "@/Components/Pagination.vue";
+import throttle from "lodash/throttle";
+import {
+    PlusIcon,
+    DocumentTextIcon,
+    PencilIcon,
+    TrashIcon,
+    SortAscendingIcon,
+    SortDescendingIcon,
+} from "@heroicons/vue/solid";
+export default {
+    components: {
+        TableLayout,
+        Head,
+        Link,
+        Tooltip,
+        PlusIcon,
+        TrashIcon,
+        PencilIcon,
+        DocumentTextIcon,
+        JetButton,
+        JetConfirmationModal,
+        Pagination,
+        SortAscendingIcon,
+        SortDescendingIcon,
+    },
+    props: {
+        products: {
+            type: Object,
+            default: () => {},
+        },
+    },
+    data() {
+        return {
+            isShow: false,
+            productId: null,
+            params: {
+                search: null,
+                field: null,
+                direction: null,
+            },
+        };
+    },
+    methods: {
+        openConfirmation(id) {
+            this.productId = id;
+            this.isShow = true;
+        },
+        destroy() {
+            this.isShow = false;
+            if (this.productId) {
+                this.$inertia.post(
+                    route("products.destroy", { product: this.productId }),
+                    { _method: "DELETE" }
+                );
+            }
+        },
+        sort(field) {
+            this.params.field = field;
+            this.params.direction =
+                this.params.direction === "asc" ? "desc" : "asc";
+        },
+    },
+    watch: {
+        params: {
+            handler: throttle(function () {
+                this.$inertia.get(this.route("products.index"), this.params, {
+                    preserveState: true,
+                    replace: true,
+                });
+            }, 300),
+            deep: true,
+        },
+    },
+};
+</script>
+
+<style></style>
