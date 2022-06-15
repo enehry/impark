@@ -41,7 +41,7 @@ const logout = () => {
 </script>
 
 <template>
-    <div>
+    <div class="">
         <Head :title="title" />
 
         <!-- <JetBanner /> -->

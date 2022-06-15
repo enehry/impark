@@ -46,6 +46,7 @@ Route::middleware([
     Route::get('/stocks/export-pdf', [StockController::class, 'exportPDF'])->name('stocks.export.pdf');
     Route::get('/stocks/export-excel', [StockController::class, 'exportExcel'])->name('stocks.export.excel');
     Route::resource('/issue-products', IssueProductController::class);
+    Route::post('/issue-products-proceed', [IssueProductController::class, 'proceedTransaction'])->name('issue-products.proceed');
   });
 
   // Route::get('/', function () {

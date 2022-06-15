@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Issue;
 use App\Models\IssueProduct;
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class IssueProductController extends Controller
@@ -14,10 +19,35 @@ class IssueProductController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index(Request $request)
   {
     // get all products
-    $product_dropdown = Product::all(['id', 'name']);
+    $product_dropdown =
+      DB::table('stocks')
+      ->where('branch_id', Auth::user()->branch_id)
+      ->leftJoin('products', 'stocks.product_id', '=', 'products.id')
+
+      ->select(
+        'stocks.id as id',
+        'products.name as name',
+        'products.price as price',
+        'stocks.quantity as quantity',
+        'products.type as type'
+      )->get();
+
+    // Stock::where('branch_id', Auth::user()->branch_id)
+    // ->with('product')
+    // ->get()
+    // ->map
+    // ->only(
+    //   [
+    //     'id',
+    //     'product.name',
+    //     'product.price',
+    //     'quantity',
+    //   ]
+    // );
+
 
     return Inertia::render('User/IssueProducts/Index', [
       'product_dropdown' => $product_dropdown,
@@ -88,5 +118,52 @@ class IssueProductController extends Controller
   public function destroy(IssueProduct $issueProduct)
   {
     //
+  }
+
+  public function proceedTransaction(Request $request)
+  {
+    // validate issueProducts array
+    $request->validate([
+      'issueProducts' => 'required|array',
+      'issueProducts.*.id' => 'required|exists:stocks,id',
+      'issueProducts.*.quantity' => 'required|integer|min:1',
+      'issueProducts.*.total' => 'required|numeric',
+    ]);
+
+    // sum total price
+    $sum_total_price = 0;
+    foreach ($request->issueProducts as $issueProduct) {
+      $sum_total_price += $issueProduct['total'];
+    }
+
+    // create issue
+    $issue = Issue::create([
+      'user_id' => Auth::user()->id,
+      'branch_id' => Auth::user()->branch_id,
+      'sum_total_price' => $sum_total_price,
+    ]);
+
+    if ($issue) {
+      // create issueProducts
+      foreach ($request->issueProducts as $issueProduct) {
+        IssueProduct::create([
+          'total_price' => $issueProduct['total'],
+          'sold_quantity' => $issueProduct['quantity'],
+          'stock_id' => $issueProduct['id'],
+          'issue_id' => $issue->id,
+        ]);
+
+        // reduce stocks quantity
+        Stock::where('id', $issueProduct['id'])
+          ->update([
+            'quantity' => DB::raw('quantity - ' . $issueProduct['quantity']),
+          ]);
+      }
+    }
+
+    // create issueProducts
+    return Redirect::route('issue-products.index', [
+      'issue' => IssueProduct::where('issue_id', $issue->id)->get(),
+    ])->banner('Transaction Successful');
   }
 }

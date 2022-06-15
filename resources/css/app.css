@@ -1,4 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+.multiselect-search {
+   @apply dark:bg-gray-700 bg-gray-50 border-0 rounded-md !important;
+}
+
+.multiselect{
+    @apply bg-gray-600 font-normal dark:text-white dark:border-0 border border-gray-300 rounded-lg  !important;
+}
+
+.multiselect-dropdown {
+    @apply dark:bg-gray-600 dark:border-0 border-2 border-gray-300 rounded-lg dark:text-white !important;
+}
 
