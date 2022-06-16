@@ -125,7 +125,27 @@
                                 </div>
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3">Stocks</th>
+                        <th scope="col" class="px-6 py-3 cursor-pointer">
+                            <span
+                                class="flex gap-1"
+                                @click.prevent="sort('quantity')"
+                                >STOCKS
+                                <div class="w-4 h-4">
+                                    <sort-ascending-icon
+                                        v-if="
+                                            params.field === 'quantity' &&
+                                            params.direction === 'asc'
+                                        "
+                                    />
+                                    <sort-descending-icon
+                                        v-if="
+                                            params.field === 'quantity' &&
+                                            params.direction === 'desc'
+                                        "
+                                    />
+                                </div>
+                            </span>
+                        </th>
                         <th scope="col" class="px-6 py-3">ROP</th>
                         <th scope="col" class="px-6 py-3">
                             Maximum <br />

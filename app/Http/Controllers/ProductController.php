@@ -21,42 +21,21 @@ class ProductController extends Controller
     //
     $request->validate([
       'direction' => 'in:asc,desc',
-      'field' => 'in:name,price,type',
+      'field' => 'in:name,price,type,quantity',
     ]);
 
     $query =
-
-      // get all stocks and sum it up by a product
-      // Stock::selectRaw('product_id, sum(quantity) as quantity')
-      // ->groupBy('product_id')->with(['product' => function ($query) use ($request) {
-      //   $query->when($request->has('search'), function ($query) use ($request) {
-      //     $query->where('name', 'like', '%' . $request->search . '%');
-      //   });
-      //   $query->when($request->has('field'), function ($query) use ($request) {
-      //     $query->orderBy($request->field, $request->direction);
-      //   });
-      // }]);
-      tap(Product::with('stocks')
-        ->when($request->has('search'), function ($query) use ($request) {
-          $query->where('name', 'like', '%' . $request->search . '%');
-        })
-        ->when($request->has('field'), function ($query) use ($request) {
-          $query->orderBy($request->field, $request->direction);
-        })
-        ->paginate(10))
-      // map the stocks and sum it up by a product
-      ->map(function ($product) {
-        $product->quantity = $product->stocks->sum('quantity');
-        return $product;
-      });
-
-    // if ($request->has('search')) {
-    //   $query->where('product.name', 'like', '%' . $request->search . '%');
-    // }
-
-    // if ($request->has(['field', 'direction'])) {
-    //   $query->orderBy($request->field, $request->direction);
-    // }
+      DB::table('products')
+      ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+      ->join('stocks', 'products.id', '=', 'stocks.product_id')
+      ->groupBy('products.id')
+      ->when($request->has('search'), function ($query) use ($request) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+      })
+      ->when($request->has('field'), function ($query) use ($request) {
+        $query->orderBy($request->field, $request->direction);
+      })
+      ->paginate(10);
 
 
     return Inertia::render('Admin/Products/Index', [

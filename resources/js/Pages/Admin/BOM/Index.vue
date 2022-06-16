@@ -195,6 +195,7 @@ import JetButton from "@/Jetstream/Button.vue";
 import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
+import pickBy from "lodash/pickBy";
 import JetModal from "@/Jetstream/Modal.vue";
 import TableRow from "@/Components/TableRow.vue";
 import {
@@ -263,7 +264,9 @@ export default {
     watch: {
         params: {
             handler: throttle(function () {
-                this.$inertia.get(this.route("bom.index"), this.params, {
+                let params = pickBy(this.params);
+
+                this.$inertia.get(this.route("bom.index"), params, {
                     preserveState: true,
                     replace: true,
                 });
