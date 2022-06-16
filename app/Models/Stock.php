@@ -29,4 +29,9 @@ class Stock extends Model
   {
     return $this->hasOne(ForecastSetting::class);
   }
+
+  public function IssueProduct()
+  {
+    return $this->hasMany(IssueProduct::class);
+  }
 }

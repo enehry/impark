@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IssueProductController;
+use App\Http\Controllers\ForecastingController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -47,6 +48,9 @@ Route::middleware([
     Route::get('/stocks/export-excel', [StockController::class, 'exportExcel'])->name('stocks.export.excel');
     Route::resource('/issue-products', IssueProductController::class);
     Route::post('/issue-products-proceed', [IssueProductController::class, 'proceedTransaction'])->name('issue-products.proceed');
+    Route::get('/issue-download-pdf', [IssueProductController::class, 'receiptIssueProduct'])->name('issue-products.pdf');
+    Route::resource('/forecasting', ForecastingController::class);
+    Route::post('/confirm-forecast', [ForecastingController::class, 'confirmForecast'])->name('forecast.confirm');
   });
 
   // Route::get('/', function () {

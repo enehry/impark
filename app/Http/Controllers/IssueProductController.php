@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Barryvdh\DomPDF\Facade\Pdf as PDF;
+
+
 
 class IssueProductController extends Controller
 {
@@ -165,5 +168,35 @@ class IssueProductController extends Controller
     return Redirect::route('issue-products.index', [
       'issue' => IssueProduct::where('issue_id', $issue->id)->get(),
     ])->banner('Transaction Successful');
+  }
+
+  public function testPDF()
+  {
+    $data = [
+      'title' => 'Welcome to Tutsmake.com',
+      'date' => date('m/d/Y')
+    ];;
+    $pdf = PDF::loadView('exports/issue_product_receipt', $data);
+    return $pdf->download('test.pdf');
+  }
+
+  public function receiptIssueProduct()
+  {
+    // get log user branch_id
+    $branch_id = Auth::user()->branch_id;
+    // get latest issue with issueProducts stocks and product filter with branch
+    $issue = Issue::where('branch_id', $branch_id)
+      ->with(['issueProducts.stock.product', 'user'])
+      ->orderBy('id', 'desc')
+      ->first();
+
+    // return response()->json([
+    //   'issue' => $issue,
+    // ]);
+
+    $pdf = PDF::loadView('exports/issue_product_receipt', [
+      'issue' => $issue,
+    ]);
+    return $pdf->download('receipt-' . $issue->id . '.pdf');
   }
 }

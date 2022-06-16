@@ -138,34 +138,40 @@
                 </thead>
                 <tbody>
                     <tr
-                        v-for="product in products.data"
-                        :key="product.id"
+                        v-for="stock in products_admin.data"
+                        :key="stock.id"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                         <th
                             scope="row"
                             class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
                         >
-                            {{ product.name }}
+                            {{ stock.name }}
                         </th>
-                        <td class="px-6 py-4 uppercase">{{ product.type }}</td>
-                        <td class="px-6 py-4">{{ product.price }}</td>
-                        <td class="px-6 py-4">0</td>
+                        <td class="px-6 py-4 uppercase">
+                            {{ stock.type }}
+                        </td>
+                        <td class="px-6 py-4">{{ stock.price }}</td>
+                        <td class="px-6 py-4">{{ stock.quantity }}</td>
                         <td class="px-6 py-4">
-                            {{ product.reordering_point }}
+                            {{ stock.reordering_point }}
                         </td>
                         <td class="px-6 py-4">
-                            {{ product.maximum_shelf_life }}
+                            {{ stock.maximum_shelf_life }}
                         </td>
                         <td class="flex items-center gap-4 py-4 pr-4">
                             <Link
-                                :href="route('products.edit', { product })"
+                                :href="
+                                    route('products.edit', {
+                                        id: stock.id,
+                                    })
+                                "
                                 class="font-medium text-blue-600 dark:text-blue-500"
                                 ><PencilIcon class="w-4 h-4"
                             /></Link>
 
                             <button
-                                @click.prevent="openConfirmation(product.id)"
+                                @click.prevent="openConfirmation(stock.id)"
                                 class="font-medium text-red-600 dark:text-red-500 hover:underline"
                             >
                                 <TrashIcon class="w-4 h-4"></TrashIcon>
@@ -175,7 +181,7 @@
                 </tbody>
             </table>
         </div>
-        <pagination :links="products.links" />
+        <pagination :links="products_admin.links" />
         <jet-confirmation-modal :show="isShow">
             <template #title>
                 <h1 class="font-medium">
@@ -205,6 +211,7 @@ import { Link, Head } from "@inertiajs/inertia-vue3";
 import Tooltip from "@/Components/Tooltip.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
+import pickBy from "lodash/pickBy";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
 import {
@@ -232,7 +239,7 @@ export default {
         SortDescendingIcon,
     },
     props: {
-        products: {
+        products_admin: {
             type: Object,
             default: () => {},
         },
@@ -271,7 +278,9 @@ export default {
     watch: {
         params: {
             handler: throttle(function () {
-                this.$inertia.get(this.route("products.index"), this.params, {
+                let params = pickBy(this.params);
+
+                this.$inertia.get(this.route("products.index"), params, {
                     preserveState: true,
                     replace: true,
                     preserveScroll: true,

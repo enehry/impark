@@ -26,7 +26,7 @@ class StockController extends Controller
     $request->validate([
       'direction' => 'in:asc,desc',
       'field' => 'in:name,price,type,quantity',
-      'product_type' => 'in:chicken,pork, beef'
+      'product_type' => 'in:chicken,pork,beef'
     ]);
 
 

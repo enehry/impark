@@ -15,4 +15,14 @@ class IssueProduct extends Model
     'stock_id',
     'issue_id',
   ];
+
+  public function issue()
+  {
+    return $this->belongsTo(Issue::class);
+  }
+
+  public function stock()
+  {
+    return $this->belongsTo(Stock::class);
+  }
 }

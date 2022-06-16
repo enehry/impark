@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -22,17 +24,43 @@ class ProductController extends Controller
       'field' => 'in:name,price,type',
     ]);
 
-    $query = Product::query();
-    if ($request->has('search')) {
-      $query->where('name', 'like', '%' . $request->search . '%');
-    }
+    $query =
 
-    if ($request->has(['field', 'direction'])) {
-      $query->orderBy($request->field, $request->direction);
-    }
+      // get all stocks and sum it up by a product
+      // Stock::selectRaw('product_id, sum(quantity) as quantity')
+      // ->groupBy('product_id')->with(['product' => function ($query) use ($request) {
+      //   $query->when($request->has('search'), function ($query) use ($request) {
+      //     $query->where('name', 'like', '%' . $request->search . '%');
+      //   });
+      //   $query->when($request->has('field'), function ($query) use ($request) {
+      //     $query->orderBy($request->field, $request->direction);
+      //   });
+      // }]);
+      tap(Product::with('stocks')
+        ->when($request->has('search'), function ($query) use ($request) {
+          $query->where('name', 'like', '%' . $request->search . '%');
+        })
+        ->when($request->has('field'), function ($query) use ($request) {
+          $query->orderBy($request->field, $request->direction);
+        })
+        ->paginate(10))
+      // map the stocks and sum it up by a product
+      ->map(function ($product) {
+        $product->quantity = $product->stocks->sum('quantity');
+        return $product;
+      });
+
+    // if ($request->has('search')) {
+    //   $query->where('product.name', 'like', '%' . $request->search . '%');
+    // }
+
+    // if ($request->has(['field', 'direction'])) {
+    //   $query->orderBy($request->field, $request->direction);
+    // }
+
 
     return Inertia::render('Admin/Products/Index', [
-      'products' => $query->paginate(10),
+      'products_admin' => $query,
     ]);
   }
 

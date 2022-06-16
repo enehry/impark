@@ -13,6 +13,12 @@ import {
     UsersIcon,
     DocumentReportIcon,
 } from "@heroicons/vue/outline";
+defineProps({
+    forecast_count: {
+        type: Number,
+        default: 0,
+    },
+});
 </script>
 
 <template>
@@ -29,7 +35,11 @@ import {
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
-            <MenuTile label="Generate Forecast">
+            <MenuTile
+                label="Generate Forecast"
+                routeName="forecasting.index"
+                :counter="forecast_count"
+            >
                 <ClipboardListIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />

@@ -38,10 +38,10 @@
                             v-model="user_product_params.product_type"
                             class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                            <option selected value="null">Choose type</option>
+                            <option selected value="">Choose type</option>
                             <option value="chicken">Chicken</option>
                             <option value="pork">Pork</option>
-                            <option value="chicken">Beef</option>
+                            <option value="beef">Beef</option>
                         </select>
                     </div>
                 </div>
@@ -256,7 +256,7 @@ export default {
                 search: null,
                 field: null,
                 direction: null,
-                product_type: null,
+                product_type: "",
             },
         };
     },

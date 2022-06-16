@@ -142,9 +142,7 @@
                 </table>
             </div>
             <div class="pt-8 flex justify-end">
-                <JetButton type="button" @click="onProceed">
-                    Proceed
-                </JetButton>
+                <JetButton type="button" @click="submit"> Proceed </JetButton>
             </div>
         </div>
         <div class="mt-8" v-else>
@@ -189,15 +187,11 @@
                 <div
                     class="flex justify-end items-center p-6 space-x-2 rounded-b border-t border-gray-200 dark:border-gray-600"
                 >
-                    <button
-                        class="uppercase font-medium py-1 px-2 text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-gray-50"
-                        @click="isShowModal = false"
-                    >
-                        Cancel
-                    </button>
-                    <JetButton type="button" @click.prevent="submit">
-                        Confirm
-                    </JetButton>
+                    <a :href="route('issue-products.pdf')">
+                        <JetButton @click="closeModal" type="button">
+                            Confirm
+                        </JetButton>
+                    </a>
                 </div>
             </div>
         </jet-modal>
@@ -205,7 +199,7 @@
 </template>
 
 <script>
-import { Link, Head } from "@inertiajs/inertia-vue3";
+import { Link, Head, Inertia } from "@inertiajs/inertia-vue3";
 import Multiselect from "@vueform/multiselect";
 import TableLayout from "@/Layouts/TableLayout.vue";
 import JetButton from "@/Jetstream/Button.vue";
@@ -244,11 +238,7 @@ export default {
         // get today date
         today() {
             var today = new Date();
-            // var dd = String(today.getDate()).padStart(2, "0");
-            // var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0
-            // var yyyy = today.getFullYear();
 
-            // today = yyyy + "-" + mm + "-" + dd;
             return today.toLocaleDateString();
         },
     },
@@ -274,6 +264,10 @@ export default {
             this.selectedProduct = this.product_dropdown.find(
                 (product) => product.id == id
             );
+        },
+        closeModal() {
+            this.isShowModal = false;
+            this.addedIssueProduct = [];
         },
         onAddProduct() {
             // check if product is already added
@@ -323,20 +317,15 @@ export default {
                 this.error.message = "Please add at least one product";
                 return;
             }
-            await this.$inertia.post(
-                route(
-                    "issue-products.proceed",
-                    {
-                        issueProducts: this.addedIssueProduct,
-                    },
-                    {
-                        preserveScroll: true,
-                        preserveState: true,
-                    }
-                )
-            );
-            this.isShowModal = false;
-            this.addedIssueProduct = [];
+            this.$inertia.visit(route("issue-products.proceed"), {
+                method: "post",
+                data: { issueProducts: this.addedIssueProduct },
+                preserveScroll: true,
+                preserveState: true,
+                onSuccess: () => {
+                    this.isShowModal = true;
+                },
+            });
         },
     },
 };
