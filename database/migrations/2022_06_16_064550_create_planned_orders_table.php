@@ -19,8 +19,10 @@ return new class extends Migration
       $table->unsignedBigInteger('user_id');
       $table->unsignedBigInteger('branch_id');
       $table->integer('order_quantity');
-      $table->integer('accepted_quantity')->default(0);
-      $table->boolean('is_ordered')->default(false);
+      // $table->integer('received_quantity')->default(0);
+      $table->dateTime('delivered_at')->nullable();
+      $table->dateTime('received_at')->nullable();
+      $table->softDeletes();
       $table->timestamps();
     });
   }

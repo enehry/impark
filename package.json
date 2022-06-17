@@ -29,6 +29,7 @@
     },
     "dependencies": {
         "@heroicons/vue": "^1.0.6",
-        "@vueform/multiselect": "^2.4.2"
+        "@vueform/multiselect": "^2.4.2",
+        "moment": "^2.29.3"
     }
 }

@@ -8,6 +8,7 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IssueProductController;
 use App\Http\Controllers\ForecastingController;
+use App\Http\Controllers\PlannedOrderController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -39,6 +40,10 @@ Route::middleware([
     Route::resource('/products', ProductController::class);
     Route::get('/bom', [BOMController::class, 'index'])->name('bom.index');
     Route::put('/bom/update-price', [BOMController::class, 'updatePrice'])->name('bom.update-price');
+    Route::resource('/planned-orders', PlannedOrderController::class);
+    Route::post('/planned-orders/convert', [PlannedOrderController::class, 'deliver'])->name('planned-orders.convert');
+    Route::delete('/planned-orders/trash/{id}', [PlannedOrderController::class, 'trash'])->name('planned-orders.trash');
+    Route::post('/planned-orders/cancel-all', [PlannedOrderController::class, 'cancelAll'])->name('planned-orders.cancel-all');
   });
 
   Route::middleware('user')->group(function () {

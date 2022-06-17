@@ -4,17 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PlannedOrder extends Model
 {
-  use HasFactory;
+  use HasFactory, SoftDeletes;
 
   protected $fillable = [
     'stock_id',
     'user_id',
     'branch_id',
     'order_quantity',
-    'is_ordered',
+    'received_quantity',
+    'is_received',
   ];
 
   public function stock()

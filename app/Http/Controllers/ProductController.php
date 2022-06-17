@@ -34,12 +34,12 @@ class ProductController extends Controller
       })
       ->when($request->has('field'), function ($query) use ($request) {
         $query->orderBy($request->field, $request->direction);
-      })
-      ->paginate(10);
+      })->paginate(10);
 
 
     return Inertia::render('Admin/Products/Index', [
-      'products_admin' => $query,
+      //@ignore-line
+      'products_admin' => $query->withQueryString(),
     ]);
   }
 

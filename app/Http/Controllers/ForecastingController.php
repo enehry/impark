@@ -39,6 +39,7 @@ class ForecastingController extends Controller
         'products.reordering_point as default_rop',
         'products.default_kg_per_day as default_kg_per_day',
         'stocks.quantity as quantity',
+        'stocks.is_forecasted as is_forecasted',
         'stocks.id as stock_id',
         'products.name as name',
         'products.type as type',
@@ -165,6 +166,12 @@ class ForecastingController extends Controller
     $user_id = auth()->user()->id;
     // insert forecast to Planned Orders
     foreach ($request->forecastStocks as $stock) {
+
+      // check if stock is already forecasted
+      if ($stock['is_forecasted'] == 1) {
+        return Redirect::back()->dangerBanner('Stock already forecasted');
+      }
+
       PlannedOrder::create([
         'stock_id' => $stock['stock_id'],
         'order_quantity' => $stock['forecast_quantity'],
@@ -175,7 +182,7 @@ class ForecastingController extends Controller
 
     // update is_forecasted to true
     DB::table('stocks')
-      ->whereIn('id', $request->forecastStocks->pluck('stock_id'))
+      ->whereIn('id', collect($request->forecastStocks)->pluck('stock_id'))
       ->update(['is_forecasted' => true]);
 
 

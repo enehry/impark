@@ -35,7 +35,11 @@ defineProps({
             <MenuTile label="Bill of Materials" routeName="bom.index">
                 <TagIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
-            <MenuTile :counter="4" label="Planned Orders">
+            <MenuTile
+                :counter="4"
+                label="Planned Orders"
+                routeName="planned-orders.index"
+            >
                 <ClipboardListIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
