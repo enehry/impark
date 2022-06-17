@@ -1,5 +1,5 @@
 <template>
-    <div class="absolute h-screen w-full" v-if="show && message">
+    <div class="absolute" v-if="show && message">
         <div
             id="toast-success"
             class="fixed z-50 flex shadow-xl items-center max-w-xs p-4 space-x-4 text-gray-500 bg-white rounded-lg top-20 right-5 dark:text-gray-400 dark:divide-gray-700 space-x dark:bg-gray-800"

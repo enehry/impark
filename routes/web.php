@@ -40,10 +40,15 @@ Route::middleware([
     Route::resource('/products', ProductController::class);
     Route::get('/bom', [BOMController::class, 'index'])->name('bom.index');
     Route::put('/bom/update-price', [BOMController::class, 'updatePrice'])->name('bom.update-price');
+
+    // planned orders
     Route::resource('/planned-orders', PlannedOrderController::class);
-    Route::post('/planned-orders/convert', [PlannedOrderController::class, 'deliver'])->name('planned-orders.convert');
-    Route::delete('/planned-orders/trash/{id}', [PlannedOrderController::class, 'trash'])->name('planned-orders.trash');
-    Route::post('/planned-orders/cancel-all', [PlannedOrderController::class, 'cancelAll'])->name('planned-orders.cancel-all');
+    Route::post('/planned-orders-convert', [PlannedOrderController::class, 'deliver'])->name('planned-orders.convert');
+    Route::delete('/planned-orders-trash/{id}', [PlannedOrderController::class, 'trash'])->name('planned-orders.trash');
+    Route::post('/planned-orders-cancel-all', [PlannedOrderController::class, 'cancelAll'])->name('planned-orders.cancel-all');
+    Route::get('/planned-orders-all-trashed', [PlannedOrderController::class, 'allTrashed'])->name('planned-orders.all-trashed');
+    Route::post('/planned-orders-restore-all', [PlannedOrderController::class, 'restoreAll'])->name('planned-orders.restore-all');
+    Route::post('/planned-orders-restore/{id}', [PlannedOrderController::class, 'restore'])->name('planned-orders.restore');
   });
 
   Route::middleware('user')->group(function () {

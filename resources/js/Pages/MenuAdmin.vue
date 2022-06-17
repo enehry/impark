@@ -17,6 +17,10 @@ defineProps({
         type: Number,
         default: 0,
     },
+    orders_count: {
+        type: Number,
+        default: 0,
+    },
 });
 </script>
 
@@ -36,7 +40,7 @@ defineProps({
                 <TagIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
             <MenuTile
-                :counter="4"
+                :counter="orders_count"
                 label="Planned Orders"
                 routeName="planned-orders.index"
             >

@@ -1,9 +1,9 @@
 <template>
     <Head title="Planned Orders" />
-    <table-layout title="Planned Orders">
+    <table-layout title="Planned Orders" backRoute="planned-orders.index">
         <tooltip
-            id="tooltip-archived-orders"
-            label="Archived planned orders"
+            id="tooltip-archived-restore"
+            label="Restore archived planned orders"
         ></tooltip>
         <div
             class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-t-lg shadow-md"
@@ -30,9 +30,9 @@
                         </div>
 
                         <input
-                            v-model="planned_orders_params.search"
+                            v-model="order_trashed_params.search"
                             type="text"
-                            id="table-search-planned-orders"
+                            id="table-search-planned-restore"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Search for products"
                         />
@@ -41,7 +41,7 @@
                 <div class="mt-1">
                     <label for="table-search" class="sr-only">Search</label>
                     <select
-                        v-model="planned_orders_params.branch"
+                        v-model="order_trashed_params.branch"
                         class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
                         <option selected value="">Choose branch</option>
@@ -55,15 +55,15 @@
                     </select>
                 </div>
             </div>
-            <div class="flex justify-end gap-2">
-                <Link :href="route('planned-orders.all-trashed')">
-                    <button
-                        data-tooltip-target="tooltip-archived-orders"
-                        class="bg-red-500 text-white p-2 rounded-full"
-                    >
-                        <trash-icon class="w-4 h-4" />
-                    </button>
-                </Link>
+            <div class="flex justify-end">
+                <jet-button
+                    @click="onRestoreAll"
+                    data-tooltip-target="tooltip-archived-restore"
+                    class="bg-red-500 text-white flex gap-2"
+                >
+                    <refresh-icon class="w-4 h-4" />
+                    <div>Restore all</div>
+                </jet-button>
             </div>
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-b-lg w-full">
@@ -74,19 +74,6 @@
                     class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
-                        <th scope="col" class="p-4">
-                            <div class="flex items-center">
-                                <input
-                                    @change="checkAll($event)"
-                                    id="checkbox-all"
-                                    type="checkbox"
-                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                />
-                                <label for="checkbox-all" class="sr-only"
-                                    >checkbox</label
-                                >
-                            </div>
-                        </th>
                         <th scope="col" class="px-6 py-3">Branch</th>
                         <th scope="col" class="px-6 py-3 cursor-pointer">
                             <span
@@ -96,17 +83,16 @@
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
-                                            planned_orders_params.field ===
+                                            order_trashed_params.field ===
                                                 'products.name' &&
-                                            planned_orders_params.order ===
-                                                'asc'
+                                            order_trashed_params.order === 'asc'
                                         "
                                     />
                                     <sort-descending-icon
                                         v-if="
-                                            planned_orders_params.field ===
+                                            order_trashed_params.field ===
                                                 'products.name' &&
-                                            planned_orders_params.order ===
+                                            order_trashed_params.order ===
                                                 'desc'
                                         "
                                     />
@@ -126,17 +112,16 @@
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
-                                            planned_orders_params.field ===
+                                            order_trashed_params.field ===
                                                 'planned_orders.order_quantity' &&
-                                            planned_orders_params.order ===
-                                                'asc'
+                                            order_trashed_params.order === 'asc'
                                         "
                                     />
                                     <sort-descending-icon
                                         v-if="
-                                            planned_orders_params.field ===
+                                            order_trashed_params.field ===
                                                 'planned_orders.order_quantity' &&
-                                            planned_orders_params.order ===
+                                            order_trashed_params.order ===
                                                 'desc'
                                         "
                                     />
@@ -151,14 +136,12 @@
                     </tr>
                 </thead>
                 <tbody v-if="hasData">
-                    <table-row-planned-orders
-                        v-for="planned_order in planned_orders_admin"
+                    <table-row-trashed
+                        v-for="planned_order in planned_orders_admin_trash"
                         :key="planned_order.id"
                         :planned_order="planned_order"
-                        :checkboxChange="onCheckboxChange"
-                        :isCheckedAll="isCheckedAll"
                     >
-                    </table-row-planned-orders>
+                    </table-row-trashed>
                 </tbody>
                 <tbody v-else>
                     <tr class="text-center">
@@ -168,16 +151,6 @@
                     </tr>
                 </tbody>
             </table>
-        </div>
-        <div
-            v-if="hasData"
-            class="pb-20 pt-8 flex justify-between items center"
-        >
-            <jet-button @click="onCancelAll"> Cancel All </jet-button>
-            <div class="flex gap-4">
-                <jet-button @click="onConvert"> Convert Selected </jet-button>
-                <jet-button @click="onConvertAll"> Convert All </jet-button>
-            </div>
         </div>
     </table-layout>
 </template>
@@ -189,9 +162,10 @@ import {
     SortAscendingIcon,
     SortDescendingIcon,
     TrashIcon,
+    RefreshIcon,
 } from "@heroicons/vue/outline";
 import Tooltip from "@/Components/Tooltip.vue";
-import TableRowPlannedOrders from "./TableRowPlannedOrders.vue";
+import TableRowTrashed from "./TableRowTrashed.vue";
 import JetButton from "@/Jetstream/Button.vue";
 import Empty from "@/Components/Empty.vue";
 import throttle from "lodash/throttle";
@@ -203,15 +177,16 @@ export default {
         TrashIcon,
         Link,
         Tooltip,
-        TableRowPlannedOrders,
+        TableRowTrashed,
         JetButton,
         Empty,
         SortAscendingIcon,
         SortDescendingIcon,
+        RefreshIcon,
     },
     name: "PlannedOrdersIndex",
     props: {
-        planned_orders_admin: {
+        planned_orders_admin_trash: {
             type: Array,
             default: () => [],
         },
@@ -224,7 +199,7 @@ export default {
         return {
             selected_planned_orders: [],
             isCheckedAll: false,
-            planned_orders_params: {
+            order_trashed_params: {
                 search: null,
                 field: null,
                 order: null,
@@ -235,62 +210,15 @@ export default {
     },
     computed: {
         hasData() {
-            return this.planned_orders_admin.length > 0;
+            return this.planned_orders_admin_trash.length > 0;
         },
     },
     methods: {
-        onCheckboxChange(id, checked) {
-            if (checked) {
-                this.selected_planned_orders.push(id);
-            } else {
-                this.selected_planned_orders.splice(
-                    this.selected_planned_orders.indexOf(id),
-                    1
-                );
-            }
-            console.log(this.selected_planned_orders);
-        },
-        checkAll($event) {
-            if ($event.target.checked) {
-                this.selected_planned_orders = this.planned_orders_admin.map(
-                    (planned_order) => planned_order.id
-                );
-                this.isCheckedAll = true;
-            } else {
-                this.selected_planned_orders = [];
-                this.isCheckedAll = false;
-            }
-            console.log(this.selected_planned_orders);
-        },
-        onConvertAll() {
-            this.$inertia.visit(route("planned-orders.convert"), {
+        onRestoreAll() {
+            this.$inertia.visit(route("planned-orders.restore-all"), {
                 method: "POST",
                 data: {
-                    ids: this.planned_orders_admin.map(
-                        (planned_order) => planned_order.id
-                    ),
-                },
-                onBefore: (visit) => {},
-                onSuccess: (response) => {},
-            });
-        },
-        onConvert() {
-            this.$inertia.visit(route("planned-orders.convert"), {
-                method: "POST",
-                data: {
-                    ids: this.selected_planned_orders,
-                },
-                preserveState: true,
-                preserveScroll: true,
-                onBefore: (visit) => {},
-                onSuccess: (response) => {},
-            });
-        },
-        onCancelAll() {
-            this.$inertia.visit(route("planned-orders.cancel-all"), {
-                method: "POST",
-                data: {
-                    ids: this.planned_orders_admin.map(
+                    ids: this.planned_orders_admin_trash.map(
                         (planned_order) => planned_order.id
                     ),
                 },
@@ -299,21 +227,25 @@ export default {
             });
         },
         sort(field) {
-            this.planned_orders_params.field = field;
-            this.planned_orders_params.order =
-                this.planned_orders_params.order === "asc" ? "desc" : "asc";
+            this.order_trashed_params.field = field;
+            this.order_trashed_params.order =
+                this.order_trashed_params.order === "asc" ? "desc" : "asc";
         },
     },
     watch: {
-        planned_orders_params: {
+        order_trashed_params: {
             handler: throttle(function () {
-                let params = pickBy(this.planned_orders_params);
+                let params = pickBy(this.order_trashed_params);
 
-                this.$inertia.get(this.route("planned-orders.index"), params, {
-                    preserveState: true,
-                    replace: true,
-                    preserveScroll: true,
-                });
+                this.$inertia.get(
+                    this.route("planned-orders.all-trashed"),
+                    params,
+                    {
+                        preserveState: true,
+                        replace: true,
+                        preserveScroll: true,
+                    }
+                );
             }, 300),
             deep: true,
         },

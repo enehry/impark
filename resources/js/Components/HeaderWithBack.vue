@@ -2,7 +2,7 @@
     <div class="mt-6">
         <Link
             :href="route(routeName)"
-            class="flex gap-2 items-center font-medium text-gray-700 dark:text-gray-300"
+            class="flex gap-2 items-center w-min font-medium text-gray-700 dark:text-gray-300"
         >
             <arrow-left-icon class="w-4 h-4" /> Back
         </Link>

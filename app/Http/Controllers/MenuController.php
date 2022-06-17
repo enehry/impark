@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\PlannedOrder;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -21,9 +22,15 @@ class MenuController extends Controller
         // count branch
         $branch_count = Branch::count();
 
+        $orders_count = PlannedOrder::where('delivered_at', null)
+          ->where('deleted_at', null)->count();
+
+
+
         return Inertia::render('MenuAdmin', [
           'product_count' => $product_count,
           'branch_count' => $branch_count,
+          'orders_count' => $orders_count
         ],);
       } else {
         // get user branch
@@ -78,6 +85,8 @@ class MenuController extends Controller
         products.reordering_point, 
         forecast_settings.reordering_point)')
           )->count();
+
+
 
 
         return Inertia::render('MenuUser', [
