@@ -18,6 +18,10 @@ defineProps({
         type: Number,
         default: 0,
     },
+    receive_count: {
+        type: Number,
+        default: 0,
+    },
 });
 </script>
 
@@ -44,7 +48,11 @@ defineProps({
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
-            <MenuTile label="Receive Products">
+            <MenuTile
+                label="Receive Products"
+                routeName="receive-products.index"
+                :counter="receive_count"
+            >
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
             <MenuTile label="Reports">

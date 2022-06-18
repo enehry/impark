@@ -48,7 +48,10 @@ defineProps({
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
-            <MenuTile label="Distribute Receivables">
+            <MenuTile
+                label="Distribute Receivables"
+                routeName="distribute-receivables.index"
+            >
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
 

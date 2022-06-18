@@ -25,8 +25,6 @@ class MenuController extends Controller
         $orders_count = PlannedOrder::where('delivered_at', null)
           ->where('deleted_at', null)->count();
 
-
-
         return Inertia::render('MenuAdmin', [
           'product_count' => $product_count,
           'branch_count' => $branch_count,
@@ -87,10 +85,17 @@ class MenuController extends Controller
           )->count();
 
 
+        // receive products count
+        $receive_count = PlannedOrder::where('delivered_at', "!=", null)
+          ->where('received_at', null)
+          ->where('deleted_at', null)
+          ->where('branch_id', $branch_id)
+          ->count();
 
 
         return Inertia::render('MenuUser', [
           'forecast_count' => $forecast_count,
+          'receive_count' => $receive_count
         ]);
       }
     }

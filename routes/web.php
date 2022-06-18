@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BOMController;
 use App\Http\Controllers\BranchController;
+use App\Http\Controllers\DistributeReceivableController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\StockController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\IssueProductController;
 use App\Http\Controllers\ForecastingController;
 use App\Http\Controllers\PlannedOrderController;
+use App\Http\Controllers\ReceiveProductController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -37,7 +39,12 @@ Route::middleware([
   Route::middleware('admin')->group(function () {
     Route::resource('/branch', BranchController::class);
     Route::resource('/users', UserController::class);
+
+    // products
     Route::resource('/products', ProductController::class);
+    Route::get('/products-excel', [ProductController::class, 'downloadExcel'])->name('products.excel');
+    Route::get('/products-pdf', [ProductController::class, 'downloadPDF'])->name('products.pdf');
+
     Route::get('/bom', [BOMController::class, 'index'])->name('bom.index');
     Route::put('/bom/update-price', [BOMController::class, 'updatePrice'])->name('bom.update-price');
 
@@ -49,6 +56,10 @@ Route::middleware([
     Route::get('/planned-orders-all-trashed', [PlannedOrderController::class, 'allTrashed'])->name('planned-orders.all-trashed');
     Route::post('/planned-orders-restore-all', [PlannedOrderController::class, 'restoreAll'])->name('planned-orders.restore-all');
     Route::post('/planned-orders-restore/{id}', [PlannedOrderController::class, 'restore'])->name('planned-orders.restore');
+
+    // distribute receivable
+    Route::get('/distribute-receivables', [DistributeReceivableController::class, 'index'])->name('distribute-receivables.index');
+    Route::post('/distribute-receivables', [DistributeReceivableController::class, 'proceed'])->name('distribute-receivables.proceed');
   });
 
   Route::middleware('user')->group(function () {
@@ -61,6 +72,9 @@ Route::middleware([
     Route::get('/issue-download-pdf', [IssueProductController::class, 'receiptIssueProduct'])->name('issue-products.pdf');
     Route::resource('/forecasting', ForecastingController::class);
     Route::post('/confirm-forecast', [ForecastingController::class, 'confirmForecast'])->name('forecast.confirm');
+
+    Route::get('/receive-products', [ReceiveProductController::class, 'index'])->name('receive-products.index');
+    Route::post('/receive-products-received', [ReceiveProductController::class, 'receiveProducts'])->name('receive-products.received');
   });
 
   // Route::get('/', function () {

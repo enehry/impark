@@ -1,6 +1,9 @@
 <template>
     <Head title="Planned Orders" />
-    <table-layout title="Planned Orders" backRoute="planned-orders.index">
+    <table-layout
+        title="Planned Orders Trashed"
+        backRoute="planned-orders.index"
+    >
         <tooltip
             id="tooltip-archived-restore"
             label="Restore archived planned orders"

@@ -1,8 +1,11 @@
 <template>
-    <table-layout title="Products/BRANCH">
-        <Head title="Products-BRANCH" />
+    <table-layout title="RECEIVE PRODUCTS/BRANCH">
+        <Head title="RECEIVE PRODUCTS-BRANCH" />
         <JetValidationErrors class="mb-4" />
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
+        <div
+            v-if="hasData"
+            class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4"
+        >
             <div
                 class="flex justify-between items-center p-4 bg-white dark:bg-gray-800"
             >
@@ -26,7 +29,7 @@
                             </svg>
                         </div>
                         <input
-                            v-model="user_product_params.search"
+                            v-model="user_receivables_params.search"
                             type="text"
                             id="table-search"
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -35,37 +38,15 @@
                     </div>
                     <div>
                         <select
-                            v-model="user_product_params.product_type"
+                            v-model="user_receivables_params.product_type"
                             class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                            <option selected :value="null">Choose type</option>
+                            <option selected value="">Choose type</option>
                             <option value="chicken">Chicken</option>
                             <option value="pork">Pork</option>
                             <option value="beef">Beef</option>
                         </select>
                     </div>
-                </div>
-                <div class="mr-4 flex gap-1 items-center">
-                    <a
-                        class="flex items-center"
-                        :href="route('stocks.export.pdf', user_product_params)"
-                    >
-                        <document-download-icon class="w-6 h-6 text-red-500" />
-                        <span class="text-xs text-gray-400">PDF</span>
-                    </a>
-                    <a
-                        class="flex items-center"
-                        :href="
-                            route('stocks.export.excel', user_product_params)
-                        "
-                    >
-                        <document-download-icon
-                            class="w-6 h-6 text-green-500"
-                        />
-                        <span class="text-xs text-gray-400 uppercase"
-                            >Excel</span
-                        >
-                    </a>
                 </div>
             </div>
             <table
@@ -75,6 +56,19 @@
                     class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
+                        <th scope="col" class="p-4">
+                            <div class="flex items-center">
+                                <input
+                                    @change="checkAll($event)"
+                                    id="checkbox-all"
+                                    type="checkbox"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                />
+                                <label for="checkbox-all" class="sr-only"
+                                    >checkbox</label
+                                >
+                            </div>
+                        </th>
                         <th scope="col" class="px-6 py-3 cursor-pointer">
                             <span
                                 class="flex gap-1"
@@ -83,17 +77,17 @@
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
-                                            user_product_params.field ===
+                                            user_receivables_params.field ===
                                                 'name' &&
-                                            user_product_params.direction ===
+                                            user_receivables_params.direction ===
                                                 'asc'
                                         "
                                     />
                                     <sort-descending-icon
                                         v-if="
-                                            user_product_params.field ===
+                                            user_receivables_params.field ===
                                                 'name' &&
-                                            user_product_params.direction ===
+                                            user_receivables_params.direction ===
                                                 'desc'
                                         "
                                     />
@@ -108,42 +102,17 @@
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
-                                            user_product_params.field ===
+                                            user_receivables_params.field ===
                                                 'type' &&
-                                            user_product_params.direction ===
+                                            user_receivables_params.direction ===
                                                 'asc'
                                         "
                                     />
                                     <sort-descending-icon
                                         v-if="
-                                            user_product_params.field ===
+                                            user_receivables_params.field ===
                                                 'type' &&
-                                            user_product_params.direction ===
-                                                'desc'
-                                        "
-                                    />
-                                </div>
-                            </span>
-                        </th>
-                        <th scope="col" class="px-6 py-3 cursor-pointer">
-                            <span
-                                class="flex gap-1"
-                                @click.prevent="sort('price')"
-                                >Price
-                                <div class="w-4 h-4">
-                                    <sort-ascending-icon
-                                        v-if="
-                                            user_product_params.field ===
-                                                'price' &&
-                                            user_product_params.direction ===
-                                                'asc'
-                                        "
-                                    />
-                                    <sort-descending-icon
-                                        v-if="
-                                            user_product_params.field ===
-                                                'price' &&
-                                            user_product_params.direction ===
+                                            user_receivables_params.direction ===
                                                 'desc'
                                         "
                                     />
@@ -154,35 +123,31 @@
                             <span
                                 class="flex gap-1"
                                 @click.prevent="sort('quantity')"
-                                >Stocks
+                                >receivables
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
-                                            user_product_params.field ===
+                                            user_receivables_params.field ===
                                                 'quantity' &&
-                                            user_product_params.direction ===
+                                            user_receivables_params.direction ===
                                                 'asc'
                                         "
                                     />
                                     <sort-descending-icon
                                         v-if="
-                                            user_product_params.field ===
+                                            user_receivables_params.field ===
                                                 'quantity' &&
-                                            user_product_params.direction ===
+                                            user_receivables_params.direction ===
                                                 'desc'
                                         "
                                     />
                                 </div>
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3">ROP</th>
+                        <th scope="col" class="px-6 py-3">Unit</th>
                         <th scope="col" class="px-6 py-3">
-                            Maximum <br />
-                            Shelf Life
-                        </th>
-                        <th scope="col" class="px-6 py-3">
-                            KG per <br />
-                            DAY
+                            Estimated time<br />
+                            of arrival
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Edit</span>
@@ -190,16 +155,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <table-row-stocks
-                        v-for="product in stocks.data"
+                    <row-receive-products
+                        v-for="product in receivables.data"
                         :key="product.id"
                         :stock="product"
+                        :isCheckedAll="isCheckedAll"
+                        :checkboxChange="onCheckboxChange"
                     >
-                    </table-row-stocks>
+                    </row-receive-products>
                 </tbody>
             </table>
         </div>
-        <pagination :links="stocks.links" />
+        <div v-else>
+            <empty label="Receive Products"></empty>
+        </div>
+        <div v-if="hasData" class="pb-20 pt-8 flex justify-end items-center">
+            <div class="flex gap-4">
+                <jet-button @click="onReceivedSelected"
+                    >Receive Selected</jet-button
+                >
+                <jet-button @click="onReceivedSelectedAll"
+                    >Receive All</jet-button
+                >
+            </div>
+        </div>
+        <pagination :links="receivables.links" />
     </table-layout>
 </template>
 
@@ -212,8 +192,9 @@ import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
 import pickBy from "lodash/pickBy";
-import TableRowStocks from "./TableRowStocks.vue";
+import RowReceiveProducts from "./RowReceiveProducts.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
+import Empty from "@/Components/Empty.vue";
 import {
     PlusIcon,
     DocumentTextIcon,
@@ -238,12 +219,13 @@ export default {
         Pagination,
         SortAscendingIcon,
         SortDescendingIcon,
-        TableRowStocks,
+        RowReceiveProducts,
         JetValidationErrors,
         DocumentDownloadIcon,
+        Empty,
     },
     props: {
-        stocks: {
+        receivables: {
             type: Object,
             default: () => {},
         },
@@ -252,13 +234,20 @@ export default {
         return {
             isShow: false,
             productId: null,
-            user_product_params: {
+            user_receivables_params: {
                 search: null,
                 field: null,
                 direction: null,
-                product_type: null,
+                product_type: "",
             },
+            isCheckedAll: false,
+            selectedReceivables: [],
         };
+    },
+    computed: {
+        hasData() {
+            return this.receivables.data.length > 0;
+        },
     },
     methods: {
         openConfirmation(id) {
@@ -267,19 +256,70 @@ export default {
         },
 
         sort(field) {
-            this.user_product_params.field = field;
-            this.user_product_params.direction =
-                this.user_product_params.direction === "asc" ? "desc" : "asc";
+            this.user_receivables_params.field = field;
+            this.user_receivables_params.direction =
+                this.user_receivables_params.direction === "asc"
+                    ? "desc"
+                    : "asc";
+        },
+        checkAll(event) {
+            this.isCheckedAll = event.target.checked;
+
+            if (this.isCheckedAll) {
+                this.selectedReceivables = this.receivables.data.map(
+                    (item) => item.id
+                );
+            } else {
+                this.selectedReceivables = [];
+            }
+
+            console.log(this.selectedReceivables);
+        },
+        onReceivedSelected() {
+            this.$inertia.visit(route("receive-products.received"), {
+                method: "POST",
+                data: {
+                    ids: this.selectedReceivables,
+                },
+                preserveState: true,
+                preserveScroll: true,
+                onBefore: (visit) => {},
+                onSuccess: (response) => {},
+            });
+        },
+        onReceivedSelectedAll() {
+            let receivables = this.receivables.data.map((item) => item.id);
+            this.$inertia.visit(route("receive-products.received"), {
+                method: "POST",
+                data: {
+                    ids: receivables,
+                },
+                preserveState: true,
+                preserveScroll: true,
+                onBefore: (visit) => {},
+                onSuccess: (response) => {},
+            });
+        },
+        onCheckboxChange(id, checked) {
+            if (checked) {
+                this.selectedReceivables.push(id);
+            } else {
+                this.selectedReceivables.splice(
+                    this.selectedReceivables.indexOf(id)
+                );
+            }
         },
     },
     watch: {
-        user_product_params: {
+        user_receivables_params: {
             handler: throttle(function () {
-                let user_product_params = pickBy(this.user_product_params);
+                let user_receivables_params = pickBy(
+                    this.user_receivables_params
+                );
 
                 this.$inertia.get(
-                    this.route("stocks.index"),
-                    user_product_params,
+                    this.route("receive-products.index"),
+                    user_receivables_params,
                     {
                         preserveState: true,
                         preserveScroll: true,

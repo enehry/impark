@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductExport;
+use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -22,6 +26,8 @@ class ProductController extends Controller
     $request->validate([
       'direction' => 'in:asc,desc',
       'field' => 'in:name,price,type,quantity',
+      'branch_id' =>  'numeric|exists:branches,id',
+      'type' => 'in:pork,beef,chicken',
     ]);
 
     $query =
@@ -32,14 +38,22 @@ class ProductController extends Controller
       ->when($request->has('search'), function ($query) use ($request) {
         $query->where('name', 'like', '%' . $request->search . '%');
       })
+      ->when($request->has('branch'), function ($query) use ($request) {
+        $query->where('stocks.branch_id', $request->branch);
+      })
+      ->when($request->has('type'), function ($query) use ($request) {
+        $query->where('products.type', $request->type);
+      })
       ->when($request->has('field'), function ($query) use ($request) {
         $query->orderBy($request->field, $request->direction);
-      })->paginate(10);
+      })->paginate(20);
 
 
     return Inertia::render('Admin/Products/Index', [
       //@ignore-line
       'products_admin' => $query->withQueryString(),
+      'p_branches' => DB::table('branches')->select('id', 'name')->get(),
+      'products_filter' => $request->all(['search', 'branch', 'field', 'direction']),
     ]);
   }
 
@@ -143,5 +157,85 @@ class ProductController extends Controller
     //
     $product->delete();
     return Redirect::route('products.index')->banner('Product deleted successfully');
+  }
+
+  public function downloadExcel(Request $request)
+  {
+
+
+    $request->validate([
+      'direction' => 'in:asc,desc',
+      'field' => 'in:name,price,type,quantity',
+      'branch_id' =>  'numeric|exists:branches,id',
+      'type' => 'in:pork,beef,chicken',
+    ]);
+
+    $query =
+      DB::table('products')
+      ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+      ->join('stocks', 'products.id', '=', 'stocks.product_id')
+      ->groupBy('products.id')
+      ->when($request->has('search'), function ($query) use ($request) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+      })
+      ->when($request->has('branch'), function ($query) use ($request) {
+        $query->where('stocks.branch_id', $request->branch);
+      })
+      ->when($request->has('type'), function ($query) use ($request) {
+        $query->where('products.type', $request->type);
+      })
+      ->when($request->has('field'), function ($query) use ($request) {
+        $query->orderBy($request->field, $request->direction);
+      })->get();
+
+    $branch = null;
+    if ($request->has('branch')) {
+      $branch = Branch::find($request->branch)->name;
+    }
+
+
+
+    // download excel in export product
+    return Excel::download(new ProductExport($query, $branch), 'stocks-' . now()->toDateString() . '.xlsx');
+  }
+
+  public function downloadPDF(Request $request)
+  {
+
+
+    $request->validate([
+      'direction' => 'in:asc,desc',
+      'field' => 'in:name,price,type,quantity',
+      'branch_id' =>  'numeric|exists:branches,id',
+      'type' => 'in:pork,beef,chicken',
+    ]);
+
+    $query =
+      DB::table('products')
+      ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+      ->join('stocks', 'products.id', '=', 'stocks.product_id')
+      ->groupBy('products.id')
+      ->when($request->has('search'), function ($query) use ($request) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+      })
+      ->when($request->has('branch'), function ($query) use ($request) {
+        $query->where('stocks.branch_id', $request->branch);
+      })
+      ->when($request->has('type'), function ($query) use ($request) {
+        $query->where('products.type', $request->type);
+      })
+      ->when($request->has('field'), function ($query) use ($request) {
+        $query->orderBy($request->field, $request->direction);
+      })->get();
+
+    $branch = null;
+    if ($request->has('branch')) {
+      $branch = Branch::find($request->branch)->name;
+    }
+
+
+
+    // download excel in export product
+    return Excel::download(new ProductExport($query, $branch), 'stocks-' . now()->toDateString() . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
   }
 }

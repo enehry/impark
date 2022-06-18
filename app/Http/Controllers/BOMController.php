@@ -16,6 +16,7 @@ class BOMController extends Controller
     $request->validate([
       'direction' => 'in:asc,desc',
       'field' => 'in:name,price,type',
+      'type' => 'in:chicken,pork,beef'
     ]);
 
     $query = Product::query();
@@ -25,6 +26,10 @@ class BOMController extends Controller
 
     if ($request->has(['field', 'direction'])) {
       $query->orderBy($request->field, $request->direction);
+    }
+
+    if ($request->has('type')) {
+      $query->where('type', $request->type);
     }
 
     return Inertia::render('Admin/BOM/Index', [
