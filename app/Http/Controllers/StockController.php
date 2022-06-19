@@ -58,7 +58,8 @@ class StockController extends Controller
 
 
     return Inertia::render('User/Stocks/Index', [
-      'stocks' => $stocks->paginate(10)->withQueryString()
+      'stocks' => $stocks->paginate(10)->withQueryString(),
+      'stocks_filter' => $request->all(['search', 'field', 'direction', 'product_type'])
     ]);
   }
 

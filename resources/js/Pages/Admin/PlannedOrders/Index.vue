@@ -1,6 +1,10 @@
 <template>
-    <Head title="Planned Orders" />
-    <table-layout title="Planned Orders">
+    <table-layout
+        title="Planned Orders"
+        note="Planned orders are orders came from the branch forecasting, 
+        you can trash/archived the planned order and restore it to the trashed page."
+    >
+        <Head title="Planned Orders" />
         <tooltip
             id="tooltip-archived-orders"
             label="Archived planned orders"
@@ -44,7 +48,7 @@
                         v-model="planned_orders_params.branch"
                         class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                     >
-                        <option selected value="">Choose branch</option>
+                        <option selected :value="null">Choose branch</option>
                         <option
                             v-for="branch in po_branches"
                             :value="branch.id"
@@ -219,17 +223,21 @@ export default {
             type: Array,
             default: () => [],
         },
+        po_filters: {
+            type: Object,
+            default: () => {},
+        },
     },
     data() {
         return {
             selected_planned_orders: [],
             isCheckedAll: false,
             planned_orders_params: {
-                search: null,
-                field: null,
-                order: null,
-                type: "",
-                branch: "",
+                search: this.po_filters.search,
+                field: this.po_filters.field,
+                order: this.po_filters.order,
+                type: this.po_filters.type,
+                branch: this.po_filters.branch,
             },
         };
     },

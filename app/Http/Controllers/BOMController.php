@@ -34,6 +34,7 @@ class BOMController extends Controller
 
     return Inertia::render('Admin/BOM/Index', [
       'products' => $query->paginate(10),
+      'bom_filter' => $request->All(['search', 'field', 'direction', 'type'])
     ]);
   }
 

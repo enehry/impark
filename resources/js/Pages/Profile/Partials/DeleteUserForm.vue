@@ -1,18 +1,18 @@
 <script setup>
-import { ref } from 'vue';
-import { useForm } from '@inertiajs/inertia-vue3';
-import JetActionSection from '@/Jetstream/ActionSection.vue';
-import JetDialogModal from '@/Jetstream/DialogModal.vue';
-import JetDangerButton from '@/Jetstream/DangerButton.vue';
-import JetInput from '@/Jetstream/Input.vue';
-import JetInputError from '@/Jetstream/InputError.vue';
-import JetSecondaryButton from '@/Jetstream/SecondaryButton.vue';
+import { ref } from "vue";
+import { useForm } from "@inertiajs/inertia-vue3";
+import JetActionSection from "@/Jetstream/ActionSection.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
+import JetDangerButton from "@/Jetstream/DangerButton.vue";
+import JetInput from "@/Jetstream/Input.vue";
+import JetInputError from "@/Jetstream/InputError.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 
 const confirmingUserDeletion = ref(false);
 const passwordInput = ref(null);
 
 const form = useForm({
-    password: '',
+    password: "",
 });
 
 const confirmUserDeletion = () => {
@@ -22,7 +22,7 @@ const confirmUserDeletion = () => {
 };
 
 const deleteUser = () => {
-    form.delete(route('current-user.destroy'), {
+    form.delete(route("current-user.destroy"), {
         preserveScroll: true,
         onSuccess: () => closeModal(),
         onError: () => passwordInput.value.focus(),
@@ -39,17 +39,15 @@ const closeModal = () => {
 
 <template>
     <JetActionSection>
-        <template #title>
-            Delete Account
-        </template>
+        <template #title> Delete Account </template>
 
-        <template #description>
-            Permanently delete your account.
-        </template>
+        <template #description> Permanently delete your account. </template>
 
         <template #content>
-            <div class="max-w-xl text-sm text-gray-600">
-                Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.
+            <div class="max-w-xl text-sm text-gray-600 dark:text-gray-300">
+                Once your account is deleted, all of its resources and data will
+                be permanently deleted. Before deleting your account, please
+                download any data or information that you wish to retain.
             </div>
 
             <div class="mt-5">
@@ -60,12 +58,13 @@ const closeModal = () => {
 
             <!-- Delete Account Confirmation Modal -->
             <JetDialogModal :show="confirmingUserDeletion" @close="closeModal">
-                <template #title>
-                    Delete Account
-                </template>
+                <template #title> Delete Account </template>
 
                 <template #content>
-                    Are you sure you want to delete your account? Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.
+                    Are you sure you want to delete your account? Once your
+                    account is deleted, all of its resources and data will be
+                    permanently deleted. Please enter your password to confirm
+                    you would like to permanently delete your account.
 
                     <div class="mt-4">
                         <JetInput
@@ -77,7 +76,10 @@ const closeModal = () => {
                             @keyup.enter="deleteUser"
                         />
 
-                        <JetInputError :message="form.errors.password" class="mt-2" />
+                        <JetInputError
+                            :message="form.errors.password"
+                            class="mt-2"
+                        />
                     </div>
                 </template>
 

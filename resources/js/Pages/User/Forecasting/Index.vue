@@ -2,7 +2,7 @@
     <table-layout title="Forecasting/BRANCH">
         <Head title="Forecasting-BRANCH" />
         <JetValidationErrors class="mb-4" />
-        <div v-if="forecast_stocks.length > 0">
+        <div>
             <div class="relative overflow-x-auto shadow-md sm:rounded-lg">
                 <div
                     class="flex justify-between items-center p-4 bg-white dark:bg-gray-800"
@@ -39,7 +39,9 @@
                                 v-model="user_forecasting_param.product_type"
                                 class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             >
-                                <option selected value="">Choose type</option>
+                                <option selected :value="null">
+                                    Choose type
+                                </option>
                                 <option value="chicken">Chicken</option>
                                 <option value="pork">Pork</option>
                                 <option value="beef">Beef</option>
@@ -187,7 +189,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody v-if="hasData">
                         <table-row-forecasting
                             v-for="forecast_stock in forecast_stocks"
                             :key="forecast_stock.id"
@@ -195,14 +197,18 @@
                         >
                         </table-row-forecasting>
                     </tbody>
+                    <tbody v-else>
+                        <tr>
+                            <td colspan="7">
+                                <Empty label="Forecasting" />
+                            </td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
-            <div class="w-full flex justify-end pt-4 pb-20">
+            <div v-if="hasData" class="w-full flex justify-end pt-4 pb-20">
                 <jet-button @click.prevent="confirm"> Confirm </jet-button>
             </div>
-        </div>
-        <div v-else>
-            <Empty label="Forecasting"></Empty>
         </div>
     </table-layout>
 </template>
@@ -252,18 +258,27 @@ export default {
             type: Array,
             default: () => [],
         },
+        forecast_filter: {
+            type: Object,
+            default: () => {},
+        },
     },
     data() {
         return {
             isShow: false,
             productId: null,
             user_forecasting_param: {
-                search: null,
-                sort: null,
-                order: null,
-                product_type: "",
+                search: this.forecast_filter.search,
+                sort: this.forecast_filter.sort,
+                order: this.forecast_filter.order,
+                product_type: this.forecast_filter.product_type,
             },
         };
+    },
+    computed: {
+        hasData() {
+            return this.forecast_stocks.length > 0;
+        },
     },
     methods: {
         openConfirmation(id) {

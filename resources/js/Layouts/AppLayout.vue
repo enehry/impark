@@ -21,8 +21,6 @@ const isSavedDark = localStorage.getItem("theme") === "dark";
 const isDark = ref(isSavedDark);
 
 const changeTheme = () => {
-    console.log("changeTheme");
-    console.log(isDark.value);
     // check if the current theme is dark
     if (isDark.value) {
         document.body.classList.remove("dark");

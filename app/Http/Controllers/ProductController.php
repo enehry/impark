@@ -53,7 +53,7 @@ class ProductController extends Controller
       //@ignore-line
       'products_admin' => $query->withQueryString(),
       'p_branches' => DB::table('branches')->select('id', 'name')->get(),
-      'products_filter' => $request->all(['search', 'branch', 'field', 'direction']),
+      'products_filter' => $request->all(['search', 'branch', 'field', 'direction', 'type']),
     ]);
   }
 
@@ -201,7 +201,6 @@ class ProductController extends Controller
 
   public function downloadPDF(Request $request)
   {
-
 
     $request->validate([
       'direction' => 'in:asc,desc',

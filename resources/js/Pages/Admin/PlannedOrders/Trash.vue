@@ -1,9 +1,10 @@
 <template>
-    <Head title="Planned Orders" />
     <table-layout
         title="Planned Orders Trashed"
         backRoute="planned-orders.index"
-    >
+        note="You can restore all trashed planned orders by clicking the button below,
+        or you can restore individual trashed planned orders by clicking the restore button."
+        ><Head title="Planned Order Trashed" />
         <tooltip
             id="tooltip-archived-restore"
             label="Restore archived planned orders"
@@ -58,7 +59,7 @@
                     </select>
                 </div>
             </div>
-            <div class="flex justify-end">
+            <div class="flex justify-end gap-2">
                 <jet-button
                     @click="onRestoreAll"
                     data-tooltip-target="tooltip-archived-restore"
@@ -66,6 +67,14 @@
                 >
                     <refresh-icon class="w-4 h-4" />
                     <div>Restore all</div>
+                </jet-button>
+                <jet-button
+                    @click="onDeleteAll"
+                    data-tooltip-target="tooltip-archived-restore"
+                    class="bg-red-500 text-white flex gap-2"
+                >
+                    <trash-icon class="w-4 h-4" />
+                    <div>Delete all</div>
                 </jet-button>
             </div>
         </div>
@@ -217,6 +226,18 @@ export default {
         },
     },
     methods: {
+        onDeleteAll() {
+            this.$inertia.visit(route("planned-orders.delete-all"), {
+                method: "DELETE",
+                data: {
+                    ids: this.planned_orders_admin_trash.map(
+                        (planned_order) => planned_order.id
+                    ),
+                },
+                onBefore: (visit) => {},
+                onSuccess: (response) => {},
+            });
+        },
         onRestoreAll() {
             this.$inertia.visit(route("planned-orders.restore-all"), {
                 method: "POST",

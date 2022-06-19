@@ -50,11 +50,13 @@ Route::middleware([
 
     // planned orders
     Route::resource('/planned-orders', PlannedOrderController::class);
+    Route::delete('/planned-orders-delete/{id}', [PlannedOrderController::class, 'delete'])->name('planned-orders.delete');
     Route::post('/planned-orders-convert', [PlannedOrderController::class, 'deliver'])->name('planned-orders.convert');
     Route::delete('/planned-orders-trash/{id}', [PlannedOrderController::class, 'trash'])->name('planned-orders.trash');
     Route::post('/planned-orders-cancel-all', [PlannedOrderController::class, 'cancelAll'])->name('planned-orders.cancel-all');
     Route::get('/planned-orders-all-trashed', [PlannedOrderController::class, 'allTrashed'])->name('planned-orders.all-trashed');
     Route::post('/planned-orders-restore-all', [PlannedOrderController::class, 'restoreAll'])->name('planned-orders.restore-all');
+    Route::delete('/planned-orders-delete-all', [PlannedOrderController::class, 'deleteAll'])->name('planned-orders.delete-all');
     Route::post('/planned-orders-restore/{id}', [PlannedOrderController::class, 'restore'])->name('planned-orders.restore');
 
     // distribute receivable

@@ -12,19 +12,8 @@
             {{ planned_order.product_name }}
         </td>
         <td class="px-6 py-4">KG</td>
-        <td
-            @dblclick="onEdit"
-            @keypress.enter="onSave"
-            class="px-6 py-4 cursor-pointer"
-        >
-            <div v-if="isEditMode">
-                <input
-                    class="text-sm h-5 w-14 pl-0.5 p-0 border border-gray-400 rounded-md"
-                    type="number"
-                    v-model="quantity"
-                />
-            </div>
-            <span v-else> {{ planned_order.quantity }}</span>
+        <td class="px-6 py-4">
+            {{ planned_order.quantity }}
         </td>
         <td class="px-6 py-4">
             {{ date }}
@@ -32,22 +21,34 @@
         <td class="px-6 py-4 flex gap-4 justify-end items-center">
             <button
                 @click="onRestore"
-                class="font-medium text-red-600 dark:text-red-500 hover:underline"
+                class="font-medium text-green-500 dark:text-green-500 hover:underline"
             >
                 <refresh-icon class="w-4 h-5"></refresh-icon>
+            </button>
+            <button
+                @click="onDelete"
+                class="font-medium text-red-500 dark:text-red-500 hover:underline"
+            >
+                <trash-icon class="w-4 h-5"></trash-icon>
             </button>
         </td>
     </tr>
 </template>
 
 <script>
-import { PencilIcon, SaveIcon, RefreshIcon } from "@heroicons/vue/outline";
+import {
+    PencilIcon,
+    SaveIcon,
+    RefreshIcon,
+    TrashIcon,
+} from "@heroicons/vue/outline";
 import moment from "moment";
 export default {
     components: {
         PencilIcon,
         SaveIcon,
         RefreshIcon,
+        TrashIcon,
     },
     props: {
         planned_order: {
@@ -80,6 +81,18 @@ export default {
                 }),
                 {
                     method: "POST",
+                    preserveScroll: true,
+                    preserveState: true,
+                }
+            );
+        },
+        onDelete() {
+            this.$inertia.visit(
+                route("planned-orders.delete", {
+                    id: this.planned_order.id,
+                }),
+                {
+                    method: "DELETE",
                     preserveScroll: true,
                     preserveState: true,
                 }

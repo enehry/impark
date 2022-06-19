@@ -1,7 +1,11 @@
 <template>
     <app-layout>
         <div class="mx-auto max-w-4xl">
-            <header-back-btn :title="title" :routeName="backRoute" />
+            <header-back-btn
+                :title="title"
+                :routeName="backRoute"
+                :note="note"
+            />
             <div class="w-full h-full">
                 <slot></slot>
             </div>
@@ -20,6 +24,7 @@ defineProps({
     backRoute: {
         type: String,
     },
+    note: String,
 });
 </script>
 

@@ -23,17 +23,14 @@ class PlannedOrderController extends Controller
       ->where('planned_orders.delivered_at', null)
       ->where('planned_orders.deleted_at', null)
       // get only specific branch based on $request->branch_id
-      ->when(request()->has('branch_id'), function ($query) {
-        return $query->where('planned_orders.branch_id', request()->branch_id);
+      ->when(request()->has('branch'), function ($query) {
+        return $query->where('planned_orders.branch_id', request()->branch);
       })
       // if there is a search request
       ->when(request()->has('search'), function ($query) {
         return $query->where('products.name', 'like', '%' . request()->search . '%');
       })
-      // if there is branch_id request
-      ->when(request()->has('branch'), function ($query) {
-        return $query->where('planned_orders.branch_id', request()->branch);
-      })
+      // leftJoin branches to get the branch of the planned order
       ->leftJoin('branches', 'planned_orders.branch_id', '=', 'branches.id')
       ->leftJoin('stocks', 'stocks.id', '=', 'planned_orders.stock_id')
       ->leftJoin('products', 'products.id', '=', 'stocks.product_id')
@@ -54,6 +51,7 @@ class PlannedOrderController extends Controller
     return Inertia::render('Admin/PlannedOrders/Index', [
       'planned_orders_admin' => $planned_orders,
       'po_branches' => DB::table('branches')->select('id', 'name')->get(),
+      'po_filters' => request()->all(['search', 'branch', 'field', 'order']),
     ]);
   }
 
@@ -130,7 +128,11 @@ class PlannedOrderController extends Controller
    */
   public function destroy(PlannedOrder $plannedOrder)
   {
-    //
+    // permanent delete the planned order
+    $plannedOrder->forceDelete();
+
+    // redirect to index
+    return Redirect::back()->banner('Planned order permanently deleted');
   }
 
   public function deliver(Request $request)
@@ -255,5 +257,47 @@ class PlannedOrderController extends Controller
       'planned_orders_admin_trash' => $planned_orders,
       'po_branches' => DB::table('branches')->select('id', 'name')->get(),
     ]);
+  }
+
+  public function delete($id)
+  {
+    // set is_forecasted to false using stock_id of planned orders
+    DB::table('stocks')
+      ->where('id', DB::table('planned_orders')->where('id', $id)->value('stock_id'))
+      ->update([
+        'is_forecasted' => false,
+      ]);
+
+    // delete the planned order
+    PlannedOrder::where('id', $id)
+      ->forceDelete();
+
+
+    return Redirect::back()->banner('Planned order permanently deleted');
+  }
+
+  public function deleteAll(Request $request)
+  {
+    // validate array of ids check if id exist on
+    // table planned_orders
+    $validatedData = $request->validate([
+      'ids' => 'required|array',
+      'ids.*' => 'required|exists:planned_orders,id|numeric',
+    ]);
+    // permanent delete all  ids
+    $ids = $request->ids;
+    foreach ($ids as $id) {
+      // set is_forecasted to false using stock_id of planned orders
+      DB::table('stocks')
+        ->where('id', DB::table('planned_orders')->where('id', $id)->value('stock_id'))
+        ->update([
+          'is_forecasted' => false,
+        ]);
+
+      PlannedOrder::where('id', $id)
+        ->forceDelete();
+    }
+
+    return Redirect::back()->banner('All planned orders permanently deleted');
   }
 }

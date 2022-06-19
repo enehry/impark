@@ -1,5 +1,8 @@
 <template>
-    <table-layout title="Products/BRANCH">
+    <table-layout
+        title="Products/BRANCH"
+        note="You can click edit icon to edit the reordering point and kg per day, click the column header to sort the table."
+    >
         <Head title="Products-BRANCH" />
         <JetValidationErrors class="mb-4" />
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
@@ -247,16 +250,20 @@ export default {
             type: Object,
             default: () => {},
         },
+        stocks_filter: {
+            type: Object,
+            default: () => {},
+        },
     },
     data() {
         return {
             isShow: false,
             productId: null,
             user_product_params: {
-                search: null,
-                field: null,
-                direction: null,
-                product_type: null,
+                search: this.stocks_filter.search,
+                field: this.stocks_filter.field,
+                direction: this.stocks_filter.direction,
+                product_type: this.stocks_filter.product_type,
             },
         };
     },

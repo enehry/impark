@@ -83,6 +83,7 @@ class ForecastingController extends Controller
 
     return Inertia::render('User/Forecasting/Index', [
       'forecast_stocks' => $stocks->get(),
+      'forecast_filter' => $request->all(['product_type', 'search', 'sort', 'order']),
     ]);
   }
 

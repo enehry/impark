@@ -1,5 +1,8 @@
 <template>
-    <table-layout title="Create User">
+    <table-layout
+        title="Create User"
+        note="Selecting user as role will only enable branch, admin has no branch in default."
+    >
         <Head title="Create User" />
         <form
             @submit.prevent="submit"

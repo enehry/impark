@@ -1,5 +1,8 @@
 <template>
-    <table-layout title="Users">
+    <table-layout
+        title="Users"
+        note="You can add new admin or multiple user on a specific branch, pencil icon to edit and trash icon to delete the user."
+    >
         <Head title="USERS" />
         <div class="flex justify-end">
             <Link
