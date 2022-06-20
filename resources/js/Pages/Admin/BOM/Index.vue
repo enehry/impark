@@ -112,6 +112,8 @@
                     </select>
                 </div>
             </div>
+
+            <jet-button @click="bypass">bypass</jet-button>
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-b-lg">
             <table
@@ -285,7 +287,7 @@ export default {
         destroy() {
             this.isShow = false;
             if (this.productId) {
-                this.$inertia.post(
+                this.$inertia.visit(
                     route("products.destroy", { product: this.productId }),
                     { _method: "DELETE" }
                 );
@@ -299,6 +301,9 @@ export default {
         showModal(product) {
             this.show = true;
             this.product = product;
+        },
+        bypass() {
+            this.$inertia.visit(route("forecasting.bypass"));
         },
     },
     watch: {

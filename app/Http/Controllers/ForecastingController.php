@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ForecastSetting;
 use App\Models\PlannedOrder;
+use App\Models\Product;
+use App\Models\Stock;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -202,5 +206,27 @@ class ForecastingController extends Controller
 
 
     return Redirect::back()->banner('Forecast successfully confirmed');
+  }
+
+  public function bypassNextDay()
+  {
+    // get all issue_products of all branches group by stock_id and branch_id sum the sold_quantity
+    $total_sold_quantity = DB::table('issue_products')
+      ->select(
+        'issue_products.stock_id',
+        DB::raw('SUM(issue_products.sold_quantity) as sold_quantity')
+      )
+      ->groupBy('issue_products.stock_id')
+      ->whereDate('created_at', '=', date('Y-m-d'))
+      ->get();
+
+    // get all stocks
+
+
+    // 
+    // kg/per day 45,  nabenta today 49, = 50 = kg/day update
+    // kg/per day 45, nabenta 44, = 43 = kg/day update
+
+    return response()->json([$total_sold_quantity, date('Y-m-d') . "'"]);
   }
 }
