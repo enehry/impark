@@ -60,6 +60,11 @@ defineProps({
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
+            <MenuTile label="Activity Logs" routeName="user-logs.index">
+                <DocumentTextIcon
+                    class="w-12 h-12 text-white dark:text-gray-500"
+                />
+            </MenuTile>
         </div>
     </MenuLayout>
 </template>

@@ -64,6 +64,7 @@
                         >Quantity (Stocks {{ selectedProduct.quantity }})</label
                     >
                     <input
+                        @keypress.enter="onAddProduct"
                         type="number"
                         v-model="quantity"
                         class="bg-gray-50 border w-full text-gray-700 border-gray-300 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -189,7 +190,7 @@
                 >
                     <a :href="route('issue-products.pdf')">
                         <JetButton @click="closeModal" type="button">
-                            Confirm
+                            Download
                         </JetButton>
                     </a>
                 </div>
@@ -257,6 +258,9 @@ export default {
         };
     },
     methods: {
+        showConfirmation() {
+            this.isShowModal = true;
+        },
         onProceed() {
             this.isShowModal = true;
         },

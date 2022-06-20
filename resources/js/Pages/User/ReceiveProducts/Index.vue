@@ -3,9 +3,14 @@
         <Head title="RECEIVE PRODUCTS-BRANCH" />
         <JetValidationErrors class="mb-4" />
         <div
-            v-if="hasData"
-            class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4"
+            v-show="error.message"
+            class="p-4 mb-4 text-sm text-red-700 bg-red-200 rounded-lg dark:bg-red-200 dark:text-red-800"
+            role="alert"
         >
+            <span class="font-medium">{{ error.title }}</span>
+            {{ error.message }}
+        </div>
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4">
             <div
                 class="flex justify-between items-center p-4 bg-white dark:bg-gray-800"
             >
@@ -41,7 +46,7 @@
                             v-model="user_receivables_params.product_type"
                             class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
-                            <option selected value="">Choose type</option>
+                            <option selected :value="null">Choose type</option>
                             <option value="chicken">Chicken</option>
                             <option value="pork">Pork</option>
                             <option value="beef">Beef</option>
@@ -53,7 +58,7 @@
                 class="w-full text-sm text-left text-gray-500 dark:text-gray-400"
             >
                 <thead
-                    class="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400"
+                    class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400"
                 >
                     <tr>
                         <th scope="col" class="p-4">
@@ -72,13 +77,13 @@
                         <th scope="col" class="px-6 py-3 cursor-pointer">
                             <span
                                 class="flex gap-1"
-                                @click.prevent="sort('name')"
+                                @click.prevent="sort('products.name')"
                                 >Product name
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
                                             user_receivables_params.field ===
-                                                'name' &&
+                                                'products.name' &&
                                             user_receivables_params.direction ===
                                                 'asc'
                                         "
@@ -86,7 +91,7 @@
                                     <sort-descending-icon
                                         v-if="
                                             user_receivables_params.field ===
-                                                'name' &&
+                                                'products.name' &&
                                             user_receivables_params.direction ===
                                                 'desc'
                                         "
@@ -97,13 +102,13 @@
                         <th scope="col" class="px-6 py-3 cursor-pointer">
                             <span
                                 class="flex gap-1"
-                                @click.prevent="sort('type')"
+                                @click.prevent="sort('products.type')"
                                 >Type
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
                                             user_receivables_params.field ===
-                                                'type' &&
+                                                'products.type' &&
                                             user_receivables_params.direction ===
                                                 'asc'
                                         "
@@ -111,7 +116,7 @@
                                     <sort-descending-icon
                                         v-if="
                                             user_receivables_params.field ===
-                                                'type' &&
+                                                'products.type' &&
                                             user_receivables_params.direction ===
                                                 'desc'
                                         "
@@ -122,13 +127,15 @@
                         <th scope="col" class="px-6 py-3 cursor-pointer">
                             <span
                                 class="flex gap-1"
-                                @click.prevent="sort('quantity')"
+                                @click.prevent="
+                                    sort('planned_orders.order_quantity')
+                                "
                                 >receivables
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
                                             user_receivables_params.field ===
-                                                'quantity' &&
+                                                'planned_orders.order_quantity' &&
                                             user_receivables_params.direction ===
                                                 'asc'
                                         "
@@ -136,7 +143,7 @@
                                     <sort-descending-icon
                                         v-if="
                                             user_receivables_params.field ===
-                                                'quantity' &&
+                                                'planned_orders.order_quantity' &&
                                             user_receivables_params.direction ===
                                                 'desc'
                                         "
@@ -149,12 +156,9 @@
                             Estimated time<br />
                             of arrival
                         </th>
-                        <th scope="col" class="px-6 py-3">
-                            <span class="sr-only">Edit</span>
-                        </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="hasData">
                     <row-receive-products
                         v-for="product in receivables.data"
                         :key="product.id"
@@ -164,22 +168,52 @@
                     >
                     </row-receive-products>
                 </tbody>
+                <tbody v-else>
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <empty label="Receive Products"></empty>
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
-        <div v-else>
-            <empty label="Receive Products"></empty>
-        </div>
+
         <div v-if="hasData" class="pb-20 pt-8 flex justify-end items-center">
             <div class="flex gap-4">
-                <jet-button @click="onReceivedSelected"
+                <jet-button @click="openConfirmation('selected')"
                     >Receive Selected</jet-button
                 >
-                <jet-button @click="onReceivedSelectedAll"
+                <jet-button @click="openConfirmation('all')"
                     >Receive All</jet-button
                 >
             </div>
         </div>
         <pagination :links="receivables.links" />
+        <jet-dialog-modal :show="isShow">
+            <template #title>
+                <div class="flex gap-2 items-center">
+                    <InformationCircleIcon class="h-5 w-5 text-amber-500" />
+                    <h1 class="font-medium">Received products confirmation!</h1>
+                </div>
+            </template>
+            <template #content>{{ message }}</template>
+            <template #footer>
+                <JetSecondaryButton
+                    :class="{ 'opacity-25': isLoading }"
+                    :disabled="isLoading"
+                    @click="isShow = false"
+                >
+                    Cancel
+                </JetSecondaryButton>
+                <jet-button
+                    @click="submit"
+                    class="ml-3"
+                    :class="{ 'opacity-25': isLoading }"
+                    :disabled="isLoading"
+                    >OK</jet-button
+                >
+            </template>
+        </jet-dialog-modal>
     </table-layout>
 </template>
 
@@ -188,13 +222,15 @@ import TableLayout from "@/Layouts/TableLayout.vue";
 import { Link, Head } from "@inertiajs/inertia-vue3";
 import Tooltip from "@/Components/Tooltip.vue";
 import JetButton from "@/Jetstream/Button.vue";
-import JetConfirmationModal from "@/Jetstream/ConfirmationModal.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
 import pickBy from "lodash/pickBy";
 import RowReceiveProducts from "./RowReceiveProducts.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 import Empty from "@/Components/Empty.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+
 import {
     PlusIcon,
     DocumentTextIcon,
@@ -203,6 +239,7 @@ import {
     SortAscendingIcon,
     SortDescendingIcon,
     DocumentDownloadIcon,
+    InformationCircleIcon,
 } from "@heroicons/vue/solid";
 export default {
     components: {
@@ -215,7 +252,6 @@ export default {
         PencilIcon,
         DocumentTextIcon,
         JetButton,
-        JetConfirmationModal,
         Pagination,
         SortAscendingIcon,
         SortDescendingIcon,
@@ -223,9 +259,16 @@ export default {
         JetValidationErrors,
         DocumentDownloadIcon,
         Empty,
+        JetDialogModal,
+        JetSecondaryButton,
+        InformationCircleIcon,
     },
     props: {
         receivables: {
+            type: Object,
+            default: () => {},
+        },
+        receivables_filter: {
             type: Object,
             default: () => {},
         },
@@ -235,13 +278,20 @@ export default {
             isShow: false,
             productId: null,
             user_receivables_params: {
-                search: null,
-                field: null,
-                direction: null,
-                product_type: "",
+                search: this.receivables_filter.search,
+                field: this.receivables_filter.field,
+                direction: this.receivables_filter.direction,
+                product_type: this.receivables_filter.product_type,
             },
             isCheckedAll: false,
             selectedReceivables: [],
+            isLoading: false,
+            message: "",
+            error: {
+                message: "",
+                title: "",
+            },
+            type: null,
         };
     },
     computed: {
@@ -250,11 +300,24 @@ export default {
         },
     },
     methods: {
-        openConfirmation(id) {
-            this.productId = id;
-            this.isShow = true;
+        openConfirmation(type) {
+            this.type = type;
+            if (type === "selected") {
+                if (this.selectedReceivables.length === 0) {
+                    this.error.title = "No products selected to receive";
+                    this.error.message = "Please select at least one product";
+                } else {
+                    this.message =
+                        "Are you sure you want to receive selected products?";
+                    this.isShow = true;
+                }
+                return;
+            } else if (type === "all") {
+                this.message = "Are you sure you want to receive all products?";
+                this.isShow = true;
+                return;
+            }
         },
-
         sort(field) {
             this.user_receivables_params.field = field;
             this.user_receivables_params.direction =
@@ -275,6 +338,14 @@ export default {
 
             console.log(this.selectedReceivables);
         },
+        submit() {
+            this.isLoading = true;
+            if (this.type === "selected") {
+                this.onReceivedSelected();
+            } else if (this.type === "all") {
+                this.onReceivedAll();
+            }
+        },
         onReceivedSelected() {
             this.$inertia.visit(route("receive-products.received"), {
                 method: "POST",
@@ -284,10 +355,15 @@ export default {
                 preserveState: true,
                 preserveScroll: true,
                 onBefore: (visit) => {},
-                onSuccess: (response) => {},
+                onSuccess: (response) => {
+                    this.isShow = false;
+                    this.isLoading = false;
+                    this.selectedReceivables = [];
+                    this.isCheckedAll = false;
+                },
             });
         },
-        onReceivedSelectedAll() {
+        onReceivedAll() {
             let receivables = this.receivables.data.map((item) => item.id);
             this.$inertia.visit(route("receive-products.received"), {
                 method: "POST",
@@ -297,7 +373,12 @@ export default {
                 preserveState: true,
                 preserveScroll: true,
                 onBefore: (visit) => {},
-                onSuccess: (response) => {},
+                onSuccess: (response) => {
+                    this.isShow = false;
+                    this.isLoading = false;
+                    this.selectedReceivables = [];
+                    this.isCheckedAll = false;
+                },
             });
         },
         onCheckboxChange(id, checked) {

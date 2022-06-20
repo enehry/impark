@@ -24,7 +24,7 @@
         <td class="px-6 py-4">{{ stock.quantity }}</td>
         <td class="px-6 py-4">KG</td>
         <td class="px-6 py-4">{{ date }}</td>
-        <td class="pr-4">
+        <!-- <td class="pr-4">
             <button
                 @click.prevent="submit"
                 v-if="isEditing"
@@ -39,7 +39,7 @@
             >
                 <PencilIcon class="w-4 h-4" />
             </button>
-        </td>
+        </td> -->
     </tr>
 </template>
 

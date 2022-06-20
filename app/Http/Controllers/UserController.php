@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class UserController extends Controller
@@ -61,6 +62,14 @@ class UserController extends Controller
       'password' => bcrypt($request->password),
       'branch_id' => $request->branch_id,
     ]);
+
+    //log action
+    LogHelper::log(
+      'created',
+      Auth::user()->name . ' created a user ' . $user->name,
+      'users',
+      [$user->id]
+    );
 
     //return response
     return redirect()->route('users.index')->banner('User created successfully.');
@@ -121,6 +130,15 @@ class UserController extends Controller
     $user->branch_id = $request->branch_id;
     $user->save();
 
+
+    //log action
+    LogHelper::log(
+      'updated',
+      Auth::user()->name . ' updated a user ' . $user->name,
+      'users',
+      [$user->id]
+    );
+
     // return response
     return redirect()->route('users.index')->banner('User updated successfully.');
   }
@@ -136,6 +154,14 @@ class UserController extends Controller
     // delete user permanently
     $user = User::findOrFail($id);
     $user->forceDelete();
+
+    //log action
+    LogHelper::log(
+      'deleted',
+      Auth::user()->name . ' deleted a user ' . $user->name,
+      'users',
+      [$user->id]
+    );
     return redirect()->route('users.index')->banner('User deleted successfully.');
   }
 }

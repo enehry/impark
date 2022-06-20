@@ -353,7 +353,7 @@ export default {
                     (product) => product.id != id
                 );
         },
-        async submit() {
+        submit() {
             if (!this.addedDistributeReceivables.length) {
                 this.error.title = "No product added!";
                 this.error.message = "Please add at least one product";
@@ -366,7 +366,9 @@ export default {
                 },
                 preserveScroll: true,
                 preserveState: true,
-                onSuccess: () => {},
+                onSuccess: () => {
+                    this.addedDistributeReceivables = [];
+                },
             });
         },
     },

@@ -20,8 +20,8 @@ return new class extends Migration
       $table->unsignedBigInteger('branch_id');
       $table->integer('order_quantity');
       // $table->integer('received_quantity')->default(0);
-      $table->dateTime('delivered_at')->nullable();
-      $table->dateTime('received_at')->nullable();
+      $table->timestamp('delivered_at')->nullable();
+      $table->timestamp('received_at')->nullable();
       $table->softDeletes();
       $table->timestamps();
     });

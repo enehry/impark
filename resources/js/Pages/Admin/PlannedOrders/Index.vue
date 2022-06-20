@@ -9,6 +9,15 @@
             id="tooltip-archived-orders"
             label="Archived planned orders"
         ></tooltip>
+        <JetValidationErrors class="mb-4" />
+        <div
+            v-show="error.message"
+            class="p-4 mb-4 text-sm text-red-700 bg-red-200 rounded-lg dark:bg-red-200 dark:text-red-800"
+            role="alert"
+        >
+            <span class="font-medium">{{ error.title }}</span>
+            {{ error.message }}
+        </div>
         <div
             class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-t-lg shadow-md"
         >
@@ -177,12 +186,46 @@
             v-if="hasData"
             class="pb-20 pt-8 flex justify-between items center"
         >
-            <jet-button @click="onCancelAll"> Cancel All </jet-button>
+            <jet-button @click="showConfirmationDialog('cancel')">
+                Cancel All
+            </jet-button>
             <div class="flex gap-4">
-                <jet-button @click="onConvert"> Convert Selected </jet-button>
-                <jet-button @click="onConvertAll"> Convert All </jet-button>
+                <jet-button @click="showConfirmationDialog('selected')">
+                    Convert Selected
+                </jet-button>
+                <jet-button @click="showConfirmationDialog('all')">
+                    Convert All
+                </jet-button>
             </div>
         </div>
+        <jet-dialog-modal :show="isShow">
+            <template #title>
+                <div class="flex gap-2 items-center">
+                    <InformationCircleIcon class="h-5 w-5 text-amber-500" />
+                    <h1 class="font-medium">Planned Orders Confirmation!</h1>
+                </div>
+            </template>
+            <template #content>
+                {{ message.title }}<br />
+                {{ message.content }}
+            </template>
+            <template #footer>
+                <JetSecondaryButton
+                    :class="{ 'opacity-25': isLoading }"
+                    :disabled="isLoading"
+                    @click="isShow = false"
+                >
+                    Cancel
+                </JetSecondaryButton>
+                <jet-button
+                    class="ml-3"
+                    :class="{ 'opacity-25': isLoading }"
+                    :disabled="isLoading"
+                    @click.prevent="submit"
+                    >OK</jet-button
+                >
+            </template>
+        </jet-dialog-modal>
     </table-layout>
 </template>
 
@@ -190,6 +233,7 @@
 import TableLayout from "@/Layouts/TableLayout.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
 import {
+    InformationCircleIcon,
     SortAscendingIcon,
     SortDescendingIcon,
     TrashIcon,
@@ -200,6 +244,9 @@ import JetButton from "@/Jetstream/Button.vue";
 import Empty from "@/Components/Empty.vue";
 import throttle from "lodash/throttle";
 import pickBy from "lodash/pickBy";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
+import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 export default {
     components: {
         TableLayout,
@@ -212,6 +259,10 @@ export default {
         Empty,
         SortAscendingIcon,
         SortDescendingIcon,
+        JetDialogModal,
+        InformationCircleIcon,
+        JetSecondaryButton,
+        JetValidationErrors,
     },
     name: "PlannedOrdersIndex",
     props: {
@@ -239,6 +290,17 @@ export default {
                 type: this.po_filters.type,
                 branch: this.po_filters.branch,
             },
+            isShow: false,
+            message: {
+                title: "",
+                content: "",
+            },
+            error: {
+                message: "",
+                title: "",
+            },
+            type: null,
+            isLoading: false,
         };
     },
     computed: {
@@ -256,7 +318,6 @@ export default {
                     1
                 );
             }
-            console.log(this.selected_planned_orders);
         },
         checkAll($event) {
             if ($event.target.checked) {
@@ -270,6 +331,49 @@ export default {
             }
             console.log(this.selected_planned_orders);
         },
+        showConfirmationDialog(type) {
+            this.type = type;
+            if (type === "cancel") {
+                this.message.title =
+                    "Are you sure you want to cancel all planned orders?";
+                this.message.content =
+                    "Cancelled planned orders will be moved to trash and branch cannot forecast the trashed product," +
+                    " you need to delete it permanently in order the branch can forecast it again.";
+                this.isShow = true;
+            } else if (type === "all") {
+                this.message.title = `Are you sure you want to convert all planned orders?`;
+                this.message.content =
+                    "All data in the planned orders will be converted and save in receive products of specific branch.";
+                this.isShow = true;
+                return;
+            }
+            // check if there is selected planned orders
+            else if (type === "selected") {
+                if (this.selected_planned_orders.length <= 0) {
+                    this.error.title = "No selected planned orders";
+                    this.error.message =
+                        "Please select at least one planned order to convert";
+                    return;
+                }
+                this.message.title = `Are you sure you want to convert ${this.selected_planned_orders.length} planned orders?`;
+                this.message.content =
+                    "All data in the planned orders will be converted and save in receive products of specific branch.";
+                this.isShow = true;
+            }
+        },
+        submit() {
+            this.isLoading = true;
+            if (this.type === "all") {
+                this.onConvertAll();
+                return;
+            } else if (this.type === "selected") {
+                this.onConvert();
+                return;
+            } else if (this.type === "cancel") {
+                this.onCancelAll();
+                return;
+            }
+        },
         onConvertAll() {
             this.$inertia.visit(route("planned-orders.convert"), {
                 method: "POST",
@@ -279,7 +383,10 @@ export default {
                     ),
                 },
                 onBefore: (visit) => {},
-                onSuccess: (response) => {},
+                onSuccess: (response) => {
+                    this.isShow = false;
+                    this.isLoading = false;
+                },
             });
         },
         onConvert() {
@@ -291,7 +398,10 @@ export default {
                 preserveState: true,
                 preserveScroll: true,
                 onBefore: (visit) => {},
-                onSuccess: (response) => {},
+                onSuccess: (response) => {
+                    this.isShow = false;
+                    this.isLoading = false;
+                },
             });
         },
         onCancelAll() {
@@ -303,7 +413,10 @@ export default {
                     ),
                 },
                 onBefore: (visit) => {},
-                onSuccess: (response) => {},
+                onSuccess: (response) => {
+                    this.isShow = false;
+                    this.isLoading = false;
+                },
             });
         },
         sort(field) {

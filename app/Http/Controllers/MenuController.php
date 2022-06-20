@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\PlannedOrder;
 use App\Models\Product;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
@@ -28,7 +29,9 @@ class MenuController extends Controller
         return Inertia::render('MenuAdmin', [
           'product_count' => $product_count,
           'branch_count' => $branch_count,
-          'orders_count' => $orders_count
+          'orders_count' => $orders_count,
+          'branch_count' => Branch::count(),
+          'user_count' => User::count(),
         ],);
       } else {
         // get user branch

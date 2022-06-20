@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Models\Branch;
+use App\Models\Product;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Maatwebsite\Excel\Concerns\ToArray;
 
 class BranchController extends Controller
 {
@@ -50,6 +54,22 @@ class BranchController extends Controller
 
     $branch = Branch::create($request->all());
 
+    // when admin created a branch we need to create all stocks for that branch based on the products
+    $products = Product::all();
+
+    foreach ($products as $product) {
+      $branch->stocks()->create([
+        'product_id' => $product->id,
+        'quantity' => 50,
+      ]);
+    }
+
+
+    // log the action
+    if ($branch) {
+      LogHelper::log('create', Auth::user()->name . ' created a new branch ' . $branch->name, 'branches', [$branch->id]);
+    }
+
     return Redirect::route('branch.index')->banner('Branch has been created successfully');
   }
 
@@ -93,6 +113,13 @@ class BranchController extends Controller
     ]);
 
     $branch->update($request->all());
+    // log the action
+    if ($branch) {
+      LogHelper::log('update', Auth::user()->name .  ' updated branch ' . $branch->name, 'branches', [$branch->id]);
+    }
+
+
+
     return Redirect::route('branch.index')->banner('Branch has been updated successfully');
   }
 
@@ -106,6 +133,18 @@ class BranchController extends Controller
   {
     //delete branch
     $branch->delete();
+
+    // if we delete the branch we need to delete all the stocks for that branch
+    $stocks = $branch->stocks()->get();
+
+    foreach ($stocks as $stock) {
+      $stock->delete();
+    }
+
+    // logs the action
+    if ($branch) {
+      LogHelper::log('deleted', Auth::user()->name . ' deleted branch ' . $branch->name, 'branches', [$branch->id]);
+    }
     return Redirect::back()->banner('Branch delete successfully.');
   }
 }

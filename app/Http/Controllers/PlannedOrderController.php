@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlannedOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -111,10 +112,20 @@ class PlannedOrderController extends Controller
     $request->validate([
       'quantity' => 'required|numeric',
     ]);
+    $old_value = $plannedOrder->order_quantity;;
     // update order_quantity
     $plannedOrder->update([
       'order_quantity' => $request->quantity,
     ]);
+
+    // log action
+    LogHelper::log(
+      'update',
+      Auth::user()->name . ' updated planned order #' . $plannedOrder->id .
+        ' from ' . $old_value . ' to ' . $request->quantity,
+      'planned_orders',
+      [$plannedOrder->id]
+    );
 
     // redirect to index
     return Redirect::back()->banner('Planned order updated successfully');
@@ -129,8 +140,16 @@ class PlannedOrderController extends Controller
   public function destroy(PlannedOrder $plannedOrder)
   {
     // permanent delete the planned order
-    $plannedOrder->forceDelete();
 
+    //log action
+    LogHelper::log(
+      'permanent deleted',
+      Auth::user()->name . ' permanently deleted planned order #' . $plannedOrder->id,
+      'planned_orders',
+      [$plannedOrder->id]
+    );
+
+    $plannedOrder->forceDelete();
     // redirect to index
     return Redirect::back()->banner('Planned order permanently deleted');
   }
@@ -156,6 +175,14 @@ class PlannedOrderController extends Controller
         ]);
     }
 
+    // log action
+    LogHelper::log(
+      'converted',
+      Auth::user()->name . ' converted planned orders #' . implode(',', $ids),
+      'planned_orders',
+      $ids
+    );
+
     return Redirect::back()->banner('Planned order(s) converted successfully');
   }
 
@@ -164,6 +191,13 @@ class PlannedOrderController extends Controller
     // soft delete planned order
     PlannedOrder::where('id', $id)
       ->delete();
+    // log action
+    LogHelper::log(
+      'move to trash',
+      Auth::user()->name . ' move to trash planned order #' . $id,
+      'planned_orders',
+      [$id]
+    );
 
     return Redirect::back()->banner('Planned order moved to trash successfully');
   }
@@ -184,6 +218,13 @@ class PlannedOrderController extends Controller
         ->delete();
     }
 
+    // log action
+    LogHelper::log(
+      'cancelled',
+      Auth::user()->name . ' cancelled planned orders #' . implode(',', $ids),
+      'planned_orders',
+      $ids
+    );
 
     return Redirect::back()->banner('All planned orders moved to trash successfully');
   }
@@ -194,7 +235,13 @@ class PlannedOrderController extends Controller
     PlannedOrder::withTrashed()
       ->where('id', $id)
       ->restore();
-
+    // log action
+    LogHelper::log(
+      'restored',
+      Auth::user()->name . ' restored planned order #' . $id,
+      'planned_orders',
+      [$id]
+    );
     return Redirect::back()->banner('Planned order restored successfully');
   }
 
@@ -213,6 +260,14 @@ class PlannedOrderController extends Controller
         ->where('id', $id)
         ->restore();
     }
+
+    // log action
+    LogHelper::log(
+      'restored',
+      Auth::user()->name . ' restored planned orders #' . implode(',', $ids),
+      'planned_orders',
+      $ids
+    );
 
     return Redirect::back()->banner('All planned orders restored successfully');
   }
@@ -272,6 +327,13 @@ class PlannedOrderController extends Controller
     PlannedOrder::where('id', $id)
       ->forceDelete();
 
+    // log action
+    LogHelper::log(
+      'permanently deleted',
+      Auth::user()->name . ' permanently deleted planned order #' . $id,
+      'planned_orders',
+      [$id]
+    );
 
     return Redirect::back()->banner('Planned order permanently deleted');
   }
@@ -297,6 +359,14 @@ class PlannedOrderController extends Controller
       PlannedOrder::where('id', $id)
         ->forceDelete();
     }
+
+    // log action
+    LogHelper::log(
+      'permanently deleted',
+      Auth::user()->name . ' move to trash planned orders #' . implode(',', $ids),
+      'planned_orders',
+      $ids
+    );
 
     return Redirect::back()->banner('All planned orders permanently deleted');
   }

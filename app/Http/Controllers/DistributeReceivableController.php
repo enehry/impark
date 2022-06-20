@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Branch;
 use App\Models\PlannedOrder;
 use App\Models\Product;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -39,9 +41,6 @@ class DistributeReceivableController extends Controller
         ->get();
     }
 
-
-
-
     return Inertia::render('Admin/DistributeReceivables/Index', [
       'admin_products_dropdown' =>  $products,
       'admin_branch_dropdown' => Branch::all(),
@@ -60,18 +59,28 @@ class DistributeReceivableController extends Controller
       'distribute_receivables.*.quantity' => 'required|numeric',
     ]);
 
+    $plannedOrdersIds = [];
     // add to planned orders and add date now in delivered_at
     foreach ($request->distribute_receivables as $distribute_receivable) {
-      $planned_orders = PlannedOrder::created([
-        'stock_id' => $distribute_receivable['id'],
-        'user_id' => auth()->id(),
-        'branch_id' => $distribute_receivable['branch_id'],
-        'order_quantity' => $distribute_receivable['quantity'],
-        'delivered_at' => now(),
-      ]);
+      $plannedOrders = new PlannedOrder();
+      $plannedOrders->stock_id = $distribute_receivable['id'];
+      $plannedOrders->user_id = Auth::user()->id;
+      $plannedOrders->branch_id = $distribute_receivable['branch_id'];
+      $plannedOrders->order_quantity = $distribute_receivable['quantity'];
+      $plannedOrders->delivered_at = now();
+      $plannedOrders->save();
+
+      $plannedOrdersIds[] = $plannedOrders->id;
     }
     // because this products are directly delivered to branch
 
+    // log the action
+    LogHelper::log(
+      'distributed',
+      Auth::user()->name . ' distributed ' . count($plannedOrdersIds) . ' products',
+      'planned_orders',
+      $plannedOrdersIds
+    );
 
     return Redirect::back()->banner('Receivables distributed successfully');
   }

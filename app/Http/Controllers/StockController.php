@@ -12,6 +12,7 @@ use Inertia\Inertia;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\StocksExport;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class StockController extends Controller
 {
@@ -166,16 +167,38 @@ class StockController extends Controller
       ]);
     }
 
+    // log action
+    LogHelper::log(
+      'updated',
+      Auth::user()->name . ' updated forecast settings for stock product ' . $forecastSetting->stock->product->name,
+      'forecast_settings',
+      [$forecastSetting->id]
+    );
+
     return Redirect::back()->banner('Product updated successfully');
   }
 
   public function exportExcel(Request $request)
   {
+    // log action
+    LogHelper::log(
+      'downloaded excel',
+      Auth::user()->name . ' download stock list excel',
+      'stocks',
+      []
+    );
     return Excel::download(new StocksExport($request), 'stocks-' . Carbon::today()->toDateString() . '.xlsx');
   }
 
   public function exportPDF(Request $request)
   {
+    // log action
+    LogHelper::log(
+      'downloaded pdf',
+      Auth::user()->name . ' download stock list pdf',
+      'stocks',
+      []
+    );
     return Excel::download(new StocksExport($request), 'stocks-' . Carbon::today()->toDateString() . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
   }
 }

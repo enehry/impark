@@ -147,9 +147,10 @@ class IssueProductController extends Controller
     ]);
 
     if ($issue) {
+      $issue_products_id = [];
       // create issueProducts
       foreach ($request->issueProducts as $issueProduct) {
-        IssueProduct::create([
+        $issue_product = IssueProduct::create([
           'total_price' => $issueProduct['total'],
           'sold_quantity' => $issueProduct['quantity'],
           'stock_id' => $issueProduct['id'],
@@ -161,23 +162,25 @@ class IssueProductController extends Controller
           ->update([
             'quantity' => DB::raw('quantity - ' . $issueProduct['quantity']),
           ]);
+
+        // add to issue_products_id array
+        $issue_product_ids[] = $issue_product->id;
+
+        // log the action
+
       }
+      LogHelper::log(
+        'issued products',
+        Auth::user()->name . ' issued ' . count($issue_product_ids) . ' products.',
+        'issue_products',
+        $issue_product_ids,
+      );
     }
 
     // create issueProducts
     return Redirect::route('issue-products.index', [
       'issue' => IssueProduct::where('issue_id', $issue->id)->get(),
     ])->banner('Transaction Successful');
-  }
-
-  public function testPDF()
-  {
-    $data = [
-      'title' => 'Welcome to Tutsmake.com',
-      'date' => date('m/d/Y')
-    ];;
-    $pdf = PDF::loadView('exports/issue_product_receipt', $data);
-    return $pdf->download('test.pdf');
   }
 
   public function receiptIssueProduct()
@@ -193,6 +196,13 @@ class IssueProductController extends Controller
     // return response()->json([
     //   'issue' => $issue,
     // ]);
+
+    LogHelper::log(
+      'downloaded pdf',
+      Auth::user()->name . ' downloaded pdf id ' . $issue->id  . ' issued products.',
+      'issues',
+      [$issue->id],
+    );
 
     $pdf = PDF::loadView('exports/issue_product_receipt', [
       'issue' => $issue,

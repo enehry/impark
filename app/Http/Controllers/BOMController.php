@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\UserLog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
@@ -48,8 +50,20 @@ class BOMController extends Controller
     ]);
 
     $product = Product::find($request->id);
+
+    $old_price = $product->price;
+
     $product->price = $request->price;
     $product->save();
+
+
+    // log the action
+    if ($product) {
+      LogHelper::log('updated', Auth::user()->name . ' updated price of product' . $product->name . ' from ' .
+        $old_price . '-' . $product->price, 'products', [$product->id]);
+    }
+
+
 
     return Redirect::back()->banner('Product price updated successfully');
   }

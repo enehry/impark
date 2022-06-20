@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlannedOrder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -165,6 +166,9 @@ class ForecastingController extends Controller
     $branch_id = auth()->user()->branch_id;
     // get user id
     $user_id = auth()->user()->id;
+
+    // collect planned orders ids
+    $planned_order_ids = [];
     // insert forecast to Planned Orders
     foreach ($request->forecastStocks as $stock) {
 
@@ -173,18 +177,28 @@ class ForecastingController extends Controller
         return Redirect::back()->dangerBanner('Stock already forecasted');
       }
 
-      PlannedOrder::create([
+      $planned_orders = PlannedOrder::create([
         'stock_id' => $stock['stock_id'],
         'order_quantity' => $stock['forecast_quantity'],
         'branch_id' => $branch_id,
         'user_id' => $user_id,
       ]);
+
+      $planned_order_ids[] = $planned_orders->id;
     }
 
     // update is_forecasted to true
     DB::table('stocks')
       ->whereIn('id', collect($request->forecastStocks)->pluck('stock_id'))
       ->update(['is_forecasted' => true]);
+
+    // log the action
+    LogHelper::log(
+      'confirmed forecast',
+      Auth::user()->name . ' confirmed forecast for ' . count($request->forecastStocks) . ' stocks',
+      'planned_orders',
+      $planned_order_ids,
+    );
 
 
     return Redirect::back()->banner('Forecast successfully confirmed');

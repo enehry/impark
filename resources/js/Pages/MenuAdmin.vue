@@ -10,6 +10,7 @@ import {
     ShareIcon,
     UsersIcon,
     DocumentReportIcon,
+    DocumentTextIcon,
 } from "@heroicons/vue/outline";
 import MenuLayout from "../Layouts/MenuLayout.vue";
 defineProps({
@@ -18,6 +19,14 @@ defineProps({
         default: 0,
     },
     orders_count: {
+        type: Number,
+        default: 0,
+    },
+    branch_count: {
+        type: Number,
+        default: 0,
+    },
+    user_count: {
         type: Number,
         default: 0,
     },
@@ -55,14 +64,27 @@ defineProps({
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
 
-            <MenuTile :counter="3" label="Branches" routeName="branch.index">
+            <MenuTile
+                label="Branches"
+                routeName="branch.index"
+                :counter="branch_count"
+            >
                 <ShareIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
-            <MenuTile :counter="4" label="Users" routeName="users.index">
+            <MenuTile
+                :counter="user_count"
+                label="Users"
+                routeName="users.index"
+            >
                 <UsersIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
             <MenuTile label="Reports">
                 <DocumentReportIcon
+                    class="w-12 h-12 text-white dark:text-gray-500"
+                />
+            </MenuTile>
+            <MenuTile label="Activity logs" routeName="user-logs.index">
+                <DocumentTextIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>

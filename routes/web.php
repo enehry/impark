@@ -11,6 +11,7 @@ use App\Http\Controllers\IssueProductController;
 use App\Http\Controllers\ForecastingController;
 use App\Http\Controllers\PlannedOrderController;
 use App\Http\Controllers\ReceiveProductController;
+use App\Http\Controllers\UserLogController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -78,6 +79,11 @@ Route::middleware([
     Route::get('/receive-products', [ReceiveProductController::class, 'index'])->name('receive-products.index');
     Route::post('/receive-products-received', [ReceiveProductController::class, 'receiveProducts'])->name('receive-products.received');
   });
+
+  // shared components
+  Route::get('user-logs', [UserLogController::class, 'index'])->name('user-logs.index');
+  Route::get('user-logs/export-excel', [UserLogController::class, 'downloadExcel'])->name('user-logs.download.excel');
+  Route::get('user-logs/export-pdf', [UserLogController::class, 'downloadPDF'])->name('user-logs.download.pdf');
 
   // Route::get('/', function () {
   //   return Inertia::render('Menu');

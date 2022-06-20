@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Stock;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
@@ -85,6 +86,23 @@ class ProductController extends Controller
 
     // create product
     $product = Product::create($request->all());
+
+    // create stock for all the branch
+    $branches = Branch::all();
+    foreach ($branches as $branch) {
+      Stock::create([
+        'branch_id' => $branch->id,
+        'product_id' => $product->id,
+        'quantity' => 0,
+      ]);
+    }
+    // log action
+    LogHelper::log(
+      'created',
+      Auth::user()->name . ' created a product ' . $product->name,
+      'products',
+      [$product->id]
+    );
     return redirect()->route('products.index')->banner('Product created successfully');
   }
 
@@ -142,6 +160,14 @@ class ProductController extends Controller
     $product->maximum_shelf_life = $request->maximum_shelf_life;
     $product->save();
 
+    // log action
+    LogHelper::log(
+      'updated',
+      Auth::user()->name . ' updated a product ' . $product->name,
+      'products',
+      [$product->id]
+    );
+
 
     return redirect()->route('products.index')->banner('Product updated successfully');
   }
@@ -156,6 +182,14 @@ class ProductController extends Controller
   {
     //
     $product->delete();
+
+    // log action
+    LogHelper::log(
+      'deleted',
+      Auth::user()->name . ' deleted a product ' . $product->name,
+      'products',
+      [$product->id]
+    );
     return Redirect::route('products.index')->banner('Product deleted successfully');
   }
 
@@ -194,7 +228,13 @@ class ProductController extends Controller
     }
 
 
-
+    // log action
+    LogHelper::log(
+      'downloaded excel',
+      Auth::user()->name . ' downloaded a product list excel',
+      'products',
+      []
+    );
     // download excel in export product
     return Excel::download(new ProductExport($query, $branch), 'stocks-' . now()->toDateString() . '.xlsx');
   }
@@ -232,7 +272,13 @@ class ProductController extends Controller
       $branch = Branch::find($request->branch)->name;
     }
 
-
+    // log action
+    LogHelper::log(
+      'downloaded pdf',
+      Auth::user()->name . ' downloaded a product list pdf',
+      'products',
+      []
+    );
 
     // download excel in export product
     return Excel::download(new ProductExport($query, $branch), 'stocks-' . now()->toDateString() . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);

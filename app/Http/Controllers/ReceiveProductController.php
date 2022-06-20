@@ -11,7 +11,7 @@ use Inertia\Inertia;
 class ReceiveProductController extends Controller
 {
   //
-  public function index()
+  public function index(Request $request)
   {
     $receivables =
       DB::table('planned_orders')
@@ -28,12 +28,30 @@ class ReceiveProductController extends Controller
         'planned_orders.order_quantity as quantity',
         'planned_orders.delivered_at',
       )
+      // if search request is present, filter the results
+      ->when($request->has('search'), function ($query) use ($request) {
+        return $query->where('products.name', 'like', '%' . $request->search . '%');
+      })
+      // if field and direction are present, order the results
+      ->when($request->has('field') && $request->has('direction'), function ($query) use ($request) {
+        return $query->orderBy($request->field, $request->direction);
+      })
+      // if product_type is present, filter the results
+      ->when($request->has('product_type'), function ($query) use ($request) {
+        return $query->where('products.type', '=', $request->product_type);
+      })
       // add additional 3 days to the delivered_at date
       ->selectRaw('DATE_ADD(planned_orders.delivered_at, INTERVAL 3 DAY) as expected_delivery_date')
       ->paginate(20);
 
     return Inertia::render('User/ReceiveProducts/Index', [
       'receivables' => $receivables,
+      'receivables_filter' => $request->all([
+        'search',
+        'field',
+        'direction',
+        'product_type',
+      ]),
     ]);
   }
 
@@ -61,10 +79,19 @@ class ReceiveProductController extends Controller
 
       // update the stock quantity
       $stock->quantity += $planned_order->order_quantity;
+      $stock->is_forecasted = false;
 
       // save the stock
       $stock->save();
     }
+
+    // log actions
+    LogHelper::log(
+      'received products',
+      Auth::user()->name . ' received ' . count($planned_orders) . ' products',
+      'planned_orders',
+      $request->ids,
+    );
 
     return redirect()->back()->banner('Products received successfully');
   }

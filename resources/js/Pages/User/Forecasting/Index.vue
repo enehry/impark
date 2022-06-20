@@ -207,9 +207,32 @@
                 </table>
             </div>
             <div v-if="hasData" class="w-full flex justify-end pt-4 pb-20">
-                <jet-button @click.prevent="confirm"> Confirm </jet-button>
+                <jet-button @click.prevent="showConfirmation">
+                    Confirm
+                </jet-button>
             </div>
         </div>
+        <jet-dialog-modal :show="isShow">
+            <template #title>
+                <div class="flex gap-2 items-center">
+                    <InformationCircleIcon class="h-5 w-5 text-amber-500" />
+                    <h1 class="font-medium">Forecasting confirmation!</h1>
+                </div>
+            </template>
+            <template #content>
+                Are you sure you want to confirm this forecasting? <br />
+                All products in your forecasting will be on the warehouse
+                planned orders.
+            </template>
+            <template #footer>
+                <JetSecondaryButton @click="isShow = false">
+                    Cancel
+                </JetSecondaryButton>
+                <jet-button class="ml-3" @click.prevent="confirm"
+                    >OK</jet-button
+                >
+            </template>
+        </jet-dialog-modal>
     </table-layout>
 </template>
 
@@ -223,6 +246,8 @@ import throttle from "lodash/throttle";
 import pickBy from "lodash/pickBy";
 import TableRowForecasting from "./TableRowForecasting.vue";
 import Empty from "@/Components/Empty.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
+import JetSecondaryButton from "@/Jetstream/SecondaryButton.vue";
 import {
     PlusIcon,
     DocumentTextIcon,
@@ -231,6 +256,7 @@ import {
     SortAscendingIcon,
     SortDescendingIcon,
     DocumentDownloadIcon,
+    InformationCircleIcon,
 } from "@heroicons/vue/solid";
 import EmptyVue from "@/Components/Empty.vue";
 import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
@@ -252,6 +278,9 @@ export default {
         TableRowForecasting,
         Empty,
         JetValidationErrors,
+        JetDialogModal,
+        JetSecondaryButton,
+        InformationCircleIcon,
     },
     props: {
         forecast_stocks: {
@@ -291,6 +320,9 @@ export default {
             this.user_forecasting_param.order =
                 this.user_forecasting_param.order === "asc" ? "desc" : "asc";
         },
+        showConfirmation() {
+            this.isShow = true;
+        },
         confirm() {
             this.$inertia.visit(route("forecast.confirm"), {
                 method: "post",
@@ -298,7 +330,7 @@ export default {
                 preserveScroll: true,
                 preserveState: true,
                 onSuccess: () => {
-                    this.isShowModal = true;
+                    this.isShow = false;
                 },
             });
         },
