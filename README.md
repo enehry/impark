@@ -13,8 +13,8 @@ How to run the project on your local machine:
 2. Run composer install
 3. Run php artisan key:generate
 4. Run php artisan migrate --seed
-5. Run php artisan serve
-It uses inertia and vue so you need to run also the NPM
+5. Run php artisan serve.
+-It uses inertia and vue so you need to run also the NPM
 6. Run npm install
 7. Run npm run dev (or npm run prod, if you want to run in dev mode with realtime updates npm run watch)
 8. Open http://localhost:8000/
