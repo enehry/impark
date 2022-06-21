@@ -1727,6 +1727,9 @@ input:checked + .toggle-bg {
 .w-64 {
   width: 16rem;
 }
+.w-52 {
+  width: 13rem;
+}
 .min-w-0 {
   min-width: 0px;
 }
@@ -2363,6 +2366,9 @@ input:checked + .toggle-bg {
 }
 .pl-0 {
   padding-left: 0px;
+}
+.pl-4 {
+  padding-left: 1rem;
 }
 .text-left {
   text-align: left;
@@ -3405,6 +3411,12 @@ input:checked + .toggle-bg {
 
   .sm\:w-40 {
     width: 10rem;
+  }
+
+  .sm\:w-min {
+    width: -webkit-min-content;
+    width: -moz-min-content;
+    width: min-content;
   }
 
   .sm\:max-w-md {

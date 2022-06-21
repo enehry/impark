@@ -33,7 +33,7 @@
                             v-model="params.search"
                             type="text"
                             id="table-search"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-80 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-60 pl-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             placeholder="Search for products"
                         />
                     </div>
@@ -73,6 +73,13 @@
             </div>
 
             <div class="flex gap-2 items-center">
+                <Link
+                    :href="route('sales-report.historical-data')"
+                    class="text-green-500 cursor-pointer hover:text-green-300 uppercase text-xs flex items-center"
+                >
+                    <TableIcon class="w-6 h-6" />
+                    <div class="text-gray-500">Historical Data</div>
+                </Link>
                 <a
                     :href="route('sales-report.pdf', params)"
                     class="text-red-500 hover:text-red-300 uppercase text-xs flex items-center"
@@ -213,11 +220,12 @@
 
 <script>
 import TableLayout from "@/Layouts/TableLayout.vue";
-import { Head } from "@inertiajs/inertia-vue3";
+import { Head, Link } from "@inertiajs/inertia-vue3";
 import {
     DocumentDownloadIcon,
     SortAscendingIcon,
     SortDescendingIcon,
+    TableIcon,
 } from "@heroicons/vue/solid";
 import Pagination from "@/Components/Pagination.vue";
 import pickBy from "lodash/pickBy";
@@ -230,6 +238,8 @@ export default {
         Pagination,
         SortAscendingIcon,
         SortDescendingIcon,
+        TableIcon,
+        Link,
     },
     props: {
         sales_branches: {

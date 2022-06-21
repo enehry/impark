@@ -70,10 +70,10 @@ Route::middleware([
     Route::get('bypass-forecasting', [ForecastingController::class, 'bypassNextDay'])->name('forecasting.bypass');
     // reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
-
     // Inventory reports
     Route::get('inventory-report', [InventoryReportController::class, 'index'])->name('inventory-report.index');
     Route::get('inventory-chart', [InventoryReportController::class, 'chart'])->name('inventory-report.chart');
+    Route::get('inventory-line-chart', [InventoryReportController::class, 'lineChart'])->name('inventory-report.line-chart');
     Route::get('inventory-report-excel', [InventoryReportController::class, 'downloadExcel'])->name('inventory-report.excel');
     Route::get('inventory-report-pdf', [InventoryReportController::class, 'downloadPDF'])->name('inventory-report.pdf');
 
@@ -81,6 +81,7 @@ Route::middleware([
     Route::get('sales-report', [SalesReportController::class, 'index'])->name('sales-report.index');
     Route::get('sales-report-excel', [SalesReportController::class, 'downloadExcel'])->name('sales-report.excel');
     Route::get('sales-report-pdf', [SalesReportController::class, 'downloadPDF'])->name('sales-report.pdf');
+    Route::get('sales-historical-data', [SalesReportController::class, 'historicalData'])->name('sales-report.historical-data');
   });
 
   Route::middleware('user')->group(function () {

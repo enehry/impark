@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Exports\ProductExport;
 use App\Models\Branch;
+use App\Models\Product;
 use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,8 +26,7 @@ class InventoryReportController extends Controller
     ]);
 
     $query =
-      DB::table('products')
-      ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+      Product::select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
       ->join('stocks', 'products.id', '=', 'stocks.product_id')
       ->groupBy('products.id')
       ->when($request->has('search'), function ($query) use ($request) {
@@ -65,6 +65,34 @@ class InventoryReportController extends Controller
       ->get();
 
     return Inertia::render('Admin/Reports/Inventory/Chart', [
+      'stocks_quantity' => $stocks,
+      'inventory_branches' => Branch::All(['id', 'name']),
+      'inventory_filter' => request()->all(['branch_id']),
+    ]);
+  }
+
+  public function lineChart()
+  {
+    $stocks =
+      Stock::select(
+        'products.name as name',
+        DB::raw('SUM(quantity) as quantity')
+      )
+      ->when(request('branch_id'), function ($query) {
+        return $query->where('branch_id', request('branch_id'));
+      })
+      ->groupBy('product_id')
+      ->join('products', 'products.id', '=', 'stocks.product_id')
+      ->get();
+
+    $stocks_vs_rop = Stock::select(
+      'products.name as name',
+      DB::raw('SUM(quantity) as quantity'),
+      DB::raw('SUM(quantity) / products.rop as rop')
+    );
+
+
+    return Inertia::render('Admin/Reports/Inventory/LineChart', [
       'stocks_quantity' => $stocks,
       'inventory_branches' => Branch::All(['id', 'name']),
       'inventory_filter' => request()->all(['branch_id']),

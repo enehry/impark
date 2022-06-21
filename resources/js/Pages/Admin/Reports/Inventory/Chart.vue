@@ -24,14 +24,14 @@
                             :key="branch.id"
                             :value="branch.id"
                         >
-                            {{ branch.name }}
+                            {{ branch.name }}2
                         </option>
                     </select>
                 </div>
                 <div class="mb-0.5">
-                    <Link :href="route('inventory-report.index')">
-                        <jet-button> Go to table </jet-button>
-                    </Link>
+                    <!-- <Link :href="route('inventory-report.line-chart')">
+                        <jet-button> Stocks/ROP Chart </jet-button>
+                    </Link> -->
                 </div>
             </div>
             <div>
