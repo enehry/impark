@@ -30,8 +30,13 @@ class Stock extends Model
     return $this->hasOne(ForecastSetting::class);
   }
 
-  public function IssueProduct()
+  public function issueProduct()
   {
     return $this->hasMany(IssueProduct::class);
+  }
+
+  public function stockAge()
+  {
+    return $this->hasMany(StockAge::class);
   }
 }

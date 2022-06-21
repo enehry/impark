@@ -9,8 +9,11 @@ use App\Http\Controllers\StockController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\IssueProductController;
 use App\Http\Controllers\ForecastingController;
+use App\Http\Controllers\InventoryReportController;
 use App\Http\Controllers\PlannedOrderController;
 use App\Http\Controllers\ReceiveProductController;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\UserLogController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -65,6 +68,19 @@ Route::middleware([
     Route::post('/distribute-receivables', [DistributeReceivableController::class, 'proceed'])->name('distribute-receivables.proceed');
 
     Route::get('bypass-forecasting', [ForecastingController::class, 'bypassNextDay'])->name('forecasting.bypass');
+    // reports
+    Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
+
+    // Inventory reports
+    Route::get('inventory-report', [InventoryReportController::class, 'index'])->name('inventory-report.index');
+    Route::get('inventory-chart', [InventoryReportController::class, 'chart'])->name('inventory-report.chart');
+    Route::get('inventory-report-excel', [InventoryReportController::class, 'downloadExcel'])->name('inventory-report.excel');
+    Route::get('inventory-report-pdf', [InventoryReportController::class, 'downloadPDF'])->name('inventory-report.pdf');
+
+    // Sales reports
+    Route::get('sales-report', [SalesReportController::class, 'index'])->name('sales-report.index');
+    Route::get('sales-report-excel', [SalesReportController::class, 'downloadExcel'])->name('sales-report.excel');
+    Route::get('sales-report-pdf', [SalesReportController::class, 'downloadPDF'])->name('sales-report.pdf');
   });
 
   Route::middleware('user')->group(function () {

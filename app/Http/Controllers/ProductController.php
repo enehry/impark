@@ -32,8 +32,7 @@ class ProductController extends Controller
     ]);
 
     $query =
-      DB::table('products')
-      ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+      Product::select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
       ->join('stocks', 'products.id', '=', 'stocks.product_id')
       ->groupBy('products.id')
       ->when($request->has('search'), function ($query) use ($request) {

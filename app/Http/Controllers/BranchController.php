@@ -60,7 +60,7 @@ class BranchController extends Controller
     foreach ($products as $product) {
       $branch->stocks()->create([
         'product_id' => $product->id,
-        'quantity' => 50,
+        'quantity' => 0,
       ]);
     }
 
@@ -131,15 +131,10 @@ class BranchController extends Controller
    */
   public function destroy(Branch $branch)
   {
+    // delete the stocks
+    $branch->stocks()->delete();
     //delete branch
     $branch->delete();
-
-    // if we delete the branch we need to delete all the stocks for that branch
-    $stocks = $branch->stocks()->get();
-
-    foreach ($stocks as $stock) {
-      $stock->delete();
-    }
 
     // logs the action
     if ($branch) {

@@ -26,22 +26,25 @@ class DatabaseSeeder extends Seeder
 
     // create user
     User::create([
-      'name' => $this->faker->name(),
+      'name' => "Juan Dela Cruz",
       'email' => 'admin@mail.com',
       'email_verified_at' => now(),
+      'role' => 1,
       'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
     ]);
 
     // create 3 branches
     for ($i = 0; $i < 3; $i++) {
       Branch::create([
-        'name' => $this->faker->name(),
-        'address' => $this->faker->address(),
-        'description' => $this->faker->text(),
+        'name' => "Branch $i",
+        'address' => "Address $i",
+        'description' => "Description $i",
       ]);
     }
 
+    // create 3 users
+
     // call product seeder for creating products and stocks for all branches
-    $this->call([ProductsSeeder::class, StockSeeder::class]);
+    $this->call([ProductSeeder::class, StockSeeder::class]);
   }
 }

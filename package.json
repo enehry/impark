@@ -30,6 +30,8 @@
     "dependencies": {
         "@heroicons/vue": "^1.0.6",
         "@vueform/multiselect": "^2.4.2",
-        "moment": "^2.29.3"
+        "chart.js": "^3.8.0",
+        "moment": "^2.29.3",
+        "vue-chartjs": "^4.1.1"
     }
 }

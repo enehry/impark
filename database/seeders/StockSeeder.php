@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\StockAge;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -25,7 +26,13 @@ class StockSeeder extends Seeder
 
     foreach ($branches as $branch) {
       foreach ($products as $product) {
-        Stock::create([
+        $stock = Stock::create([
+          'product_id' => $product->id,
+          'branch_id' => $branch->id,
+          'quantity' => 50,
+        ]);
+        StockAge::create([
+          'stock_id' => $stock->id,
           'product_id' => $product->id,
           'branch_id' => $branch->id,
           'quantity' => 50,

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\PlannedOrder;
+use App\Models\StockAge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,9 @@ class ReceiveProductController extends Controller
   //
   public function index(Request $request)
   {
+
+    // we need to get the receivable products that are not yet received
+    // by using received_at = null && delivered_at != null 
     $receivables =
       DB::table('planned_orders')
       ->where('delivered_at', '!=', null)
@@ -46,6 +50,7 @@ class ReceiveProductController extends Controller
 
     return Inertia::render('User/ReceiveProducts/Index', [
       'receivables' => $receivables,
+      // include the filter in the components
       'receivables_filter' => $request->all([
         'search',
         'field',
@@ -83,6 +88,15 @@ class ReceiveProductController extends Controller
 
       // save the stock
       $stock->save();
+
+      // create new stock_age
+
+      $stockAge = StockAge::create([
+        'stock_id' => $stock->id,
+        'product_id' => $stock->product_id,
+        'branch_id' => $stock->branch_id,
+        'quantity' => $planned_order->order_quantity,
+      ]);
     }
 
     // log actions

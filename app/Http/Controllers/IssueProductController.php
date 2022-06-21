@@ -6,6 +6,7 @@ use App\Models\Issue;
 use App\Models\IssueProduct;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\StockAge;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -163,11 +164,39 @@ class IssueProductController extends Controller
             'quantity' => DB::raw('quantity - ' . $issueProduct['quantity']),
           ]);
 
+
+        $tempSoldQuantity = $issueProduct['quantity'];
+
+        // subtract sold quantity from stock age quantity 
+        // loop it until tempSoldQuantity is 0
+        while ($tempSoldQuantity > 0) {
+          $stock_age = StockAge::where('stock_id', $issueProduct['id'])
+            ->where('quantity', '>', 0)
+            ->orderBy('created_at', 'asc')
+            ->first();
+
+          if ($stock_age) {
+            if ($tempSoldQuantity >= $stock_age->quantity) {
+              $tempSoldQuantity -= $stock_age->quantity;
+              $stock_age->update([
+                'quantity' => 0,
+              ]);
+            } else {
+              $stock_age->update([
+                'quantity' => DB::raw('quantity - ' . $tempSoldQuantity),
+              ]);
+              $tempSoldQuantity = 0;
+            }
+          } else {
+            return Redirect::back()->bannerStyle([
+              'Error out of stock',
+              'error'
+            ]);
+          }
+        }
         // add to issue_products_id array
         $issue_product_ids[] = $issue_product->id;
-
         // log the action
-
       }
       LogHelper::log(
         'issued products',
