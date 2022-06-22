@@ -349,4 +349,79 @@ class SalesReportController extends Controller
 
     return Excel::download(new SalesHistoryReportExport($issueProducts, $branch, $start_date, $end_date, $group_by), 'sales_report' . now()->toDateString() . ' .pdf', \Maatwebsite\Excel\Excel::DOMPDF);
   }
+
+  public function chart(Request $request)
+  {
+    $request->validate([
+      'start_date' => 'date',
+      'end_date' => 'date|after:start_date',
+      'branch_id' => 'exists:branches,id',
+      'type' => 'in:chicken,beef,pork',
+      'group_by' => 'in:weekly,monthly,yearly',
+    ]);
+
+    // default daily
+    $group_by = 'DATE_FORMAT(issue_products.created_at, "%Y-%m-%d")';
+    $formatted_date = 'DATE_FORMAT(issue_products.created_at, "%Y-%m-%d")';
+
+
+    if ($request->has('group_by')) {
+      if ($request->group_by == 'weekly') {
+        $group_by = 'WEEK(issue_products.created_at)';
+        $formatted_date =  'WEEK(issue_products.created_at)';
+      } else if ($request->group_by == 'monthly') {
+        $group_by = 'MONTH(issue_products.created_at)';
+        $formatted_date =  'DATE_FORMAT(issue_products.created_at, "%M")';
+      } else if ($request->group_by == 'yearly') {
+        $group_by = 'YEAR(issue_products.created_at)';
+        $formatted_date = 'DATE_FORMAT(issue_products.created_at, "%Y")';
+      }
+    }
+
+    $issueProducts =
+      // group by requested group_by
+      IssueProduct::groupBy(DB::raw($group_by))
+      ->selectRaw(
+        "products.id as product_id,
+      products.name as name, 
+      products.type as type, 
+      products.price as price, 
+      sum(issue_products.total_price) as total_sales,
+      sum(sold_quantity) as sold_quantity,
+      issue_products.created_at as date"
+      )->selectRaw($formatted_date . ' as formatted_date')
+      // display today issue products when there is no end date
+      ->when($request->has('start_date'), function ($query) use ($request) {
+        return $request->end_date ?
+          $query->whereBetween('issue_products.created_at', [$request->start_date, $request->end_date]) :
+          $query->whereDate('issue_products.created_at', '>=', $request->start_date);
+      })
+      // get only issue_products today
+      // ->whereBetween('issue_products.created_at', [$request->start_date, $request->end_date])
+      ->leftJoin('stocks', 'issue_products.stock_id', '=', 'stocks.id')
+      ->leftJoin('products', 'stocks.product_id', '=', 'products.id')
+      // if filter by branch_id
+      ->when(request('branch_id'), function ($query) {
+        return $query->where('stocks.branch_id', request('branch_id'));
+      })
+      // if filter by type
+      ->when(request('type'), function ($query) {
+        return $query->where('products.type', request('type'));
+      })
+      // sort by date
+      ->orderBy('date', 'asc')
+      ->get();
+
+    return Inertia::render('Admin/Reports/Sales/HistoricalDataChart', [
+      'sales_chart_data' => $issueProducts,
+      'sales_chart_branches' => Branch::all(['id', 'name']),
+      'sales_chart_filter' => $request->all([
+        'start_date',
+        'end_date',
+        'branch_id',
+        'type',
+        'group_by'
+      ]),
+    ]);
+  }
 }

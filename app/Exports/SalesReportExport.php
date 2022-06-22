@@ -161,7 +161,11 @@ class SalesReportExport implements
         // assign cell values
         $event->sheet->setCellValue('A1', 'IMPARK');
         $event->sheet->setCellValue('A2', 'BRANCH: ' . $branch . ' SALES REPORT ' .  now());
-        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'BRANCH: ' . $branch . ' SALES REPORT ' . now());
+        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'Total Sales: ' . number_format(
+          $this->data->sum('total_sales'),
+          2
+        ));
+
 
         // assign cell styles
         $event->sheet->getStyle('A1:A2')->applyFromArray($style_text_center);

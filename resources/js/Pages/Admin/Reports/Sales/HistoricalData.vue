@@ -7,7 +7,7 @@
          No selected start date or end date will show today sales.
          Start date and end date will show sales between the selected dates."
     >
-        <Head :title="`Sales Report ${today}`" />
+        <Head title="Sales Report" />
         <div
             class="w-full flex md:flex-row gap-2 flex-col justify-between items-center p-4 bg-white dark:bg-gray-800 sm:rounded-t-lg shadow-md"
         >
@@ -17,6 +17,7 @@
                 >
                     <div class="flex gap-2 items-center">
                         <Link
+                            :href="route('sales-report.chart')"
                             class="text-green-500 cursor-pointer hover:text-green-300 uppercase text-xs flex items-center"
                         >
                             <ChartSquareBarIcon class="w-6 h-6" />
@@ -392,18 +393,7 @@ export default {
                 this.params.direction === "asc" ? "desc" : "asc";
         },
     },
-    computed: {
-        // get date mmm dd, yyyy
-        today() {
-            const today = new Date();
-            const dd = String(today.getDate()).padStart(2, "0");
-            const mm = today.toLocaleString("default", {
-                month: "short",
-            });
-            const yyyy = today.getFullYear();
-            return `${mm} ${dd}, ${yyyy}`;
-        },
-    },
+    computed: {},
     watch: {
         params: {
             handler: throttle(function () {
