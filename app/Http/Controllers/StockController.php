@@ -34,8 +34,7 @@ class StockController extends Controller
     // get user branch
     $branch_id = auth()->user()->branch_id;
 
-    $stocks = DB::table('stocks')
-      ->join('products', 'stocks.product_id', '=', 'products.id')
+    $stocks = Stock::join('products', 'stocks.product_id', '=', 'products.id')
       ->leftJoin('forecast_settings', 'stocks.id', '=', 'forecast_settings.stock_id')
       ->where('stocks.branch_id', $branch_id)
       ->when($request->has('product_type'), function ($query) use ($request) {

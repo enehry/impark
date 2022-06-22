@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AgeReportController;
 use App\Http\Controllers\BOMController;
 use App\Http\Controllers\BranchController;
 use App\Http\Controllers\DistributeReceivableController;
@@ -85,6 +86,9 @@ Route::middleware([
     Route::get('sales-historical-data-excel', [SalesReportController::class, 'downloadHistoricalDataExcel'])->name('sales-report.historical-data-excel');
     Route::get('sales-historical-data-pdf', [SalesReportController::class, 'downloadHistoricalDataPDF'])->name('sales-report.historical-data-pdf');
     Route::get('sales-report-chart', [SalesReportController::class, 'chart'])->name('sales-report.chart');
+
+    // Age report
+    Route::get('age-report', [AgeReportController::class, 'index'])->name('age-report.index');
   });
 
   Route::middleware('user')->group(function () {

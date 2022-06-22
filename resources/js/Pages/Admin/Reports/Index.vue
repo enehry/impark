@@ -29,7 +29,7 @@ defineProps({});
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
-            <MenuTile label="Age Reports" routeName="inventory-report.index">
+            <MenuTile label="Age Reports" routeName="age-report.index">
                 <DocumentTextIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
