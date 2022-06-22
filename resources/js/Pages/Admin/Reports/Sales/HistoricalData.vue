@@ -23,12 +23,24 @@
                             <div class="text-gray-500">Historical Data</div>
                         </Link>
                         <a
+                            :href="
+                                route(
+                                    'sales-report.historical-data-pdf',
+                                    params
+                                )
+                            "
                             class="text-red-500 hover:text-red-300 uppercase text-xs flex items-center"
                         >
                             <DocumentDownloadIcon class="w-6 h-6" />
                             <div class="text-gray-500">PDF</div>
                         </a>
                         <a
+                            :href="
+                                route(
+                                    'sales-report.historical-data-excel',
+                                    params
+                                )
+                            "
                             class="text-green-500 hover:text-green-300 uppercase text-xs flex items-center"
                         >
                             <DocumentDownloadIcon class="w-6 h-6" />

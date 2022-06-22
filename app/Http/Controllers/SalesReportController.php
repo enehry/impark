@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\SalesHistoryReportExport;
 use App\Exports\SalesReportExport;
 use App\Models\Branch;
 use App\Models\IssueProduct;
@@ -136,7 +137,8 @@ class SalesReportController extends Controller
     }
 
     $issueProducts =
-      IssueProduct::groupBy('products.id')
+      IssueProduct::groupBy(DB::raw('DATE_FORMAT(issue_products.created_at, "%Y-%m-%d")'))
+      ->groupBy('products.id')
       ->selectRaw(
         "products.id as product_id,
       products.name as name, 
@@ -186,5 +188,109 @@ class SalesReportController extends Controller
       ]),
       'sales_history_branches' => Branch::all(['id', 'name']),
     ]);
+  }
+
+
+  public function dataOfHistorical(Request $request)
+  {
+    $request->validate([
+      'start_date' => 'date',
+      'end_date' => 'date|after:start_date',
+      'branch_id' => 'exists:branches,id',
+      'type' => 'in:chicken,beef,pork',
+      'direction' => 'in:asc,desc',
+    ]);
+
+    $start_date = now()->toDateString();
+
+    if ($request->start_date) {
+      $start_date = $request->start_date;
+    }
+
+    $issueProducts =
+      IssueProduct::groupBy(DB::raw('DATE_FORMAT(issue_products.created_at, "%Y-%m-%d")'))
+      ->groupBy('products.id')
+      ->selectRaw(
+        "products.id as product_id,
+      products.name as name, 
+      products.type as type, 
+      products.price as price, 
+      sum(issue_products.total_price) as total_sales,
+      sum(sold_quantity) as sold_quantity,
+      issue_products.created_at as date"
+      )
+      // group by day month and year
+      // get only issue_products today
+      // display today issue products when there is no end date
+      ->when($start_date, function ($query) use ($request, $start_date) {
+        return $request->end_date ? $query->whereBetween('issue_products.created_at', [$start_date, $request->end_date]) : $query->whereDate('issue_products.created_at', '>=', $start_date);
+      })
+      // get only issue_products today
+      // ->whereBetween('issue_products.created_at', [$request->start_date, $request->end_date])
+      ->leftJoin('stocks', 'issue_products.stock_id', '=', 'stocks.id')
+      ->leftJoin('products', 'stocks.product_id', '=', 'products.id')
+      // if filter search by products.name
+      ->when(request('search'), function ($query) {
+        return $query->where('products.name', 'like', '%' . request('search') . '%');
+      })
+      // if filter by branch_id
+      ->when(request('branch_id'), function ($query) {
+        return $query->where('stocks.branch_id', request('branch_id'));
+      })
+      // if filter by type
+      ->when(request('type'), function ($query) {
+        return $query->where('products.type', request('type'));
+      })
+      // if filed and direction exist on request
+      ->when(request('field') && request('direction'), function ($query) {
+        return $query->orderBy(request('field'), request('direction'));
+      })
+      ->get();
+
+    return $issueProducts;
+  }
+
+  public function downloadHistoricalDataExcel(Request $request)
+  {
+    $issueProducts = $this->dataOfHistorical($request);
+    $branch = null;
+    if (request('branch_id')) {
+      $branch = Branch::find(request('branch_id'))->name;
+    }
+
+    $start_date = date('m/d/Y', strtotime(now()->toDateString()));
+
+    if ($request->start_date) {
+      $start_date = $request->start_date;
+    }
+
+    $end_date = null;
+    if ($request->end_date) {
+      $end_date =  date('m/d/Y', strtotime($request->end_date));
+    }
+
+    return Excel::download(new SalesHistoryReportExport($issueProducts, $branch, $start_date, $end_date), 'sales_report' . now()->toDateString() . ' .xlsx');
+  }
+
+  public function downloadHistoricalDataPDF(Request $request)
+  {
+    $issueProducts = $this->dataOfHistorical($request);
+    $branch = null;
+    if (request('branch_id')) {
+      $branch = Branch::find(request('branch_id'))->name;
+    }
+
+    $start_date = date('m/d/Y', strtotime(now()->toDateString()));
+
+    if ($request->start_date) {
+      $start_date = $request->start_date;
+    }
+
+    $end_date = null;
+    if ($request->end_date) {
+      $end_date =  date('m/d/Y', strtotime($request->end_date));
+    }
+
+    return Excel::download(new SalesHistoryReportExport($issueProducts, $branch, $start_date, $end_date), 'sales_report' . now()->toDateString() . ' .pdf', \Maatwebsite\Excel\Excel::DOMPDF);
   }
 }

@@ -82,6 +82,8 @@ Route::middleware([
     Route::get('sales-report-excel', [SalesReportController::class, 'downloadExcel'])->name('sales-report.excel');
     Route::get('sales-report-pdf', [SalesReportController::class, 'downloadPDF'])->name('sales-report.pdf');
     Route::get('sales-historical-data', [SalesReportController::class, 'historicalData'])->name('sales-report.historical-data');
+    Route::get('sales-historical-data-excel', [SalesReportController::class, 'downloadHistoricalDataExcel'])->name('sales-report.historical-data-excel');
+    Route::get('sales-historical-data-pdf', [SalesReportController::class, 'downloadHistoricalDataPDF'])->name('sales-report.historical-data-pdf');
   });
 
   Route::middleware('user')->group(function () {
