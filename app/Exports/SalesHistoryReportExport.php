@@ -25,13 +25,15 @@ class SalesHistoryReportExport implements
   private $branch;
   private $start_date;
   private $end_date;
+  private $group_by;
 
-  public function __construct($query, $branch, $start_date, $end_date)
+  public function __construct($query, $branch, $start_date, $end_date, $group_by)
   {
     $this->data = $query;
     $this->branch = $branch;
     $this->start_date = $start_date;
     $this->end_date = $end_date;
+    $this->group_by = $group_by;
   }
   /**
    * @return \Illuminate\Support\Collection
@@ -52,7 +54,7 @@ class SalesHistoryReportExport implements
       $sales->price,
       $sales->total_sales,
       // format to mm/dd/yyyy
-      date('m/d/Y', strtotime($sales->date)),
+      $sales->formatted_date,
     ];
   }
 
@@ -172,13 +174,14 @@ class SalesHistoryReportExport implements
         $branch = $this->branch ? $this->branch : 'ALL';
 
         // start date to end date
-        $header = $this->end_date ?  'SALES HISTORY REPORT OF ' . $branch . ' BRANCH from ' . $this->start_date . ' to ' . $this->end_date :
-          'SALES HISTORY REPORT ' . $branch . ' from ' . $this->start_date;
+        $header = $this->start_date ? $this->group_by . ' SALES REPORT OF ' . $branch . ' BRANCH FROM ' . $this->start_date . ' to ' . $this->end_date :
+          $this->group_by .  ' SALES REPORT ' . $branch . ' BRANCH FROM ';
+
 
         // assign cell values
         $event->sheet->setCellValue('A1', 'IMPARK');
         $event->sheet->setCellValue('A2', $header);
-        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'TOTAL OF ALL SALES : ' .  number_format($this->data->sum('total_sales', 2)));
+        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'TOTAL OF SALES : ' .  number_format($this->data->sum('total_sales', 2)));
 
         // assign cell styles
         $event->sheet->getStyle('A1:A2')->applyFromArray($style_text_center);

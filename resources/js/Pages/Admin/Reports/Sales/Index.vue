@@ -78,7 +78,7 @@
                     class="text-green-500 cursor-pointer hover:text-green-300 uppercase text-xs flex items-center"
                 >
                     <TableIcon class="w-6 h-6" />
-                    <div class="text-gray-500">Historical Data</div>
+                    <div class="text-gray-500">All Sales Data</div>
                 </Link>
                 <a
                     :href="route('sales-report.pdf', params)"

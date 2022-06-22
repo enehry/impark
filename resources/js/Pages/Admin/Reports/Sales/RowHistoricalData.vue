@@ -15,7 +15,7 @@
             {{ sale.total_sales }}
         </td>
         <td class="px-6 py-4">
-            {{ date }}
+            {{ sale.formatted_date }}
         </td>
     </tr>
 </template>

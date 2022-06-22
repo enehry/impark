@@ -19,8 +19,8 @@
                         <Link
                             class="text-green-500 cursor-pointer hover:text-green-300 uppercase text-xs flex items-center"
                         >
-                            <TableIcon class="w-6 h-6" />
-                            <div class="text-gray-500">Historical Data</div>
+                            <ChartSquareBarIcon class="w-6 h-6" />
+                            <div class="text-gray-500">Chart</div>
                         </Link>
                         <a
                             :href="
@@ -48,58 +48,76 @@
                         </a>
                     </div>
                     <div
-                        class="flex items-center justify-between sm:w-min w-full"
+                        class="flex gap-2 md:flex-row flex-col md:w-min w-full"
                     >
-                        <div class="relative">
-                            <div
-                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
-                            >
-                                <svg
-                                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
+                        <div
+                            class="flex items-center justify-between sm:w-min w-full"
+                        >
+                            <div class="relative">
+                                <div
+                                    class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
                                 >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                        clip-rule="evenodd"
-                                    ></path>
-                                </svg>
+                                    <svg
+                                        class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                            clip-rule="evenodd"
+                                        ></path>
+                                    </svg>
+                                </div>
+                                <input
+                                    v-model="params.start_date"
+                                    name="start"
+                                    type="date"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Select date start"
+                                />
                             </div>
-                            <input
-                                v-model="params.start_date"
-                                name="start"
-                                type="date"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Select date start"
-                            />
+                            <span class="mx-4 text-xs text-gray-500">to</span>
+                            <div class="relative">
+                                <div
+                                    class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+                                >
+                                    <svg
+                                        class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                                        fill="currentColor"
+                                        viewBox="0 0 20 20"
+                                        xmlns="http://www.w3.org/2000/svg"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
+                                            clip-rule="evenodd"
+                                        ></path>
+                                    </svg>
+                                </div>
+                                <input
+                                    v-model="params.end_date"
+                                    name="end"
+                                    type="date"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder="Select date end"
+                                />
+                            </div>
                         </div>
-                        <span class="mx-4 text-xs text-gray-500">to</span>
-                        <div class="relative">
-                            <div
-                                class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
+                        <div class="w-full">
+                            <label for="table-branch" class="sr-only"
+                                >Type</label
                             >
-                                <svg
-                                    class="w-5 h-5 text-gray-500 dark:text-gray-400"
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                    xmlns="http://www.w3.org/2000/svg"
-                                >
-                                    <path
-                                        fill-rule="evenodd"
-                                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                        clip-rule="evenodd"
-                                    ></path>
-                                </svg>
-                            </div>
-                            <input
-                                v-model="params.end_date"
-                                name="end"
-                                type="date"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="Select date end"
-                            />
+                            <select
+                                v-model="params.group_by"
+                                class="bg-gray-50 w-full sm:w-min border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            >
+                                <option selected :value="null">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="yearly">Yearly</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -320,6 +338,7 @@ import {
     SortAscendingIcon,
     SortDescendingIcon,
     TableIcon,
+    ChartSquareBarIcon,
 } from "@heroicons/vue/solid";
 import Pagination from "@/Components/Pagination.vue";
 import pickBy from "lodash/pickBy";
@@ -335,6 +354,7 @@ export default {
         TableIcon,
         Link,
         RowHistoricalData,
+        ChartSquareBarIcon,
     },
     props: {
         sales_history_branches: {
@@ -361,6 +381,7 @@ export default {
                 direction: this.sales_history_filter.direction,
                 start_date: this.sales_history_filter.start_date,
                 end_date: this.sales_history_filter.end_date,
+                group_by: this.sales_history_filter.group_by,
             },
         };
     },
