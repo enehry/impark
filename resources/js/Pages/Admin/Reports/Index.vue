@@ -9,7 +9,12 @@ import {
     DocumentTextIcon,
     DocumentReportIcon,
 } from "@heroicons/vue/outline";
-defineProps({});
+defineProps({
+    age_counter: {
+        type: Number,
+        default: 0,
+    },
+});
 </script>
 
 <template>
@@ -29,7 +34,11 @@ defineProps({});
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
-            <MenuTile label="Age Reports" routeName="age-report.index">
+            <MenuTile
+                label="Age Reports"
+                routeName="age-report.index"
+                :counter="age_counter"
+            >
                 <DocumentTextIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />

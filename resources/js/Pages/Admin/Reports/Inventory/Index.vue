@@ -223,7 +223,7 @@
                 <tbody v-else>
                     <tr>
                         <td colspan="7" class="px-6 py-4">
-                            <Empty label="Products" />
+                            <Empty label="Inventory Report" />
                         </td>
                     </tr>
                 </tbody>

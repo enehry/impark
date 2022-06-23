@@ -2,7 +2,7 @@
     <table-layout
         :title="`Age Report ${today}`"
         backRoute="reports.index"
-        note="You can choose stock of a specific branch by selecting it in the dropdown."
+        note="You can filter the age report by branch or by type of product."
     >
         <Head title="Inventory Report" />
         <div
@@ -42,7 +42,7 @@
                     <div class="mt-1">
                         <label for="table-branch" class="sr-only">Branch</label>
                         <select
-                            v-model="params.branch"
+                            v-model="params.branch_id"
                             class="bg-gray-50 border border-gray-300 text-gray-700 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block py-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         >
                             <option selected :value="null">
@@ -73,22 +73,15 @@
             </div>
 
             <div class="flex gap-2 items-center">
-                <Link
-                    :href="route('inventory-report.chart')"
-                    class="text-blue-500 hover:text-blue-300 uppercase text-xs flex items-center"
-                >
-                    <ChartPieIcon class="w-6 h-6 mr-1" />
-                    <div class="text-gray-500">Chart</div>
-                </Link>
                 <a
-                    :href="route('inventory-report.pdf', params)"
+                    :href="route('age-report.pdf', params)"
                     class="text-red-500 hover:text-red-300 uppercase text-xs flex items-center"
                 >
                     <DocumentDownloadIcon class="w-6 h-6" />
                     <div class="text-gray-500">PDF</div>
                 </a>
                 <a
-                    :href="route('inventory-report.excel', params)"
+                    :href="route('age-report.excel', params)"
                     class="text-green-500 hover:text-green-300 uppercase text-xs flex items-center"
                 >
                     <DocumentDownloadIcon class="w-6 h-6" />
@@ -221,10 +214,6 @@
                         v-for="stock in age_report_data.data"
                         :key="stock.id"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700"
-                        :class="{
-                            'bg-red-500 dark:bg-red-400 text-gray-50':
-                                stock.age >= 4,
-                        }"
                     >
                         <th
                             scope="row"
@@ -240,11 +229,18 @@
                         <td class="px-6 py-4">
                             {{ stock.maximum_shelf_life }}
                         </td>
-                        <td class="px-6 py-4">
-                            {{ stock.status }}
+                        <td class="px-5 py-3 font-medium">
+                            <div
+                                :class="{
+                                    'bg-red-300 rounded-lg p-1 dark:bg-red-500 text-red-700':
+                                        stock.age >= 4,
+                                }"
+                            >
+                                {{ stock.status }}
+                            </div>
                         </td>
                         <td class="px-6 py-4">
-                            {{ stock.date }}
+                            {{ stock.formatted_date }}
                         </td>
                     </tr>
                 </tbody>
@@ -320,7 +316,7 @@ export default {
                 search: this.age_report_filter.search,
                 field: this.age_report_filter.field,
                 direction: this.age_report_filter.direction,
-                branch: this.age_report_filter.branch_id,
+                branch_id: this.age_report_filter.branch_id,
                 type: this.age_report_filter.type,
             },
         };

@@ -81,14 +81,14 @@
                     <div class="text-gray-500">All Sales Data</div>
                 </Link>
                 <a
-                    :href="route('sales-report.pdf', params)"
+                    :href="hasData ? route('sales-report.pdf', params) : '/#'"
                     class="text-red-500 hover:text-red-300 uppercase text-xs flex items-center"
                 >
                     <DocumentDownloadIcon class="w-6 h-6" />
                     <div class="text-gray-500">PDF</div>
                 </a>
                 <a
-                    :href="route('sales-report.excel', params)"
+                    :href="hasData ? route('sales-report.excel', params) : '/#'"
                     class="text-green-500 hover:text-green-300 uppercase text-xs flex items-center"
                 >
                     <DocumentDownloadIcon class="w-6 h-6" />
@@ -195,7 +195,7 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody v-if="hasData">
                     <tr
                         v-for="sale in sales.data"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -212,6 +212,13 @@
                         <td class="px-6 py-4">{{ sale.total_sales }}</td>
                     </tr>
                 </tbody>
+                <tbody v-else>
+                    <tr>
+                        <td colspan="5" class="px-6 py-4">
+                            <Empty label="Today sales report" />
+                        </td>
+                    </tr>
+                </tbody>
             </table>
         </div>
         <pagination :links="sales.links"></pagination>
@@ -221,6 +228,7 @@
 <script>
 import TableLayout from "@/Layouts/TableLayout.vue";
 import { Head, Link } from "@inertiajs/inertia-vue3";
+import Empty from "@/Components/Empty.vue";
 import {
     DocumentDownloadIcon,
     SortAscendingIcon,
@@ -240,6 +248,7 @@ export default {
         SortDescendingIcon,
         TableIcon,
         Link,
+        Empty,
     },
     props: {
         sales_branches: {
@@ -284,6 +293,9 @@ export default {
             });
             const yyyy = today.getFullYear();
             return `${mm} ${dd}, ${yyyy}`;
+        },
+        hasData() {
+            return this.sales.data.length > 0;
         },
     },
     watch: {

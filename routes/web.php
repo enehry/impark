@@ -89,6 +89,8 @@ Route::middleware([
 
     // Age report
     Route::get('age-report', [AgeReportController::class, 'index'])->name('age-report.index');
+    Route::get('age-report-excel', [AgeReportController::class, 'downloadExcel'])->name('age-report.excel');
+    Route::get('age-report-pdf', [AgeReportController::class, 'downloadPDF'])->name('age-report.pdf');
   });
 
   Route::middleware('user')->group(function () {
@@ -104,6 +106,14 @@ Route::middleware([
 
     Route::get('/receive-products', [ReceiveProductController::class, 'index'])->name('receive-products.index');
     Route::post('/receive-products-received', [ReceiveProductController::class, 'receiveProducts'])->name('receive-products.received');
+
+    // reports
+    Route::get('/reports-branch', [ReportController::class, 'indexBranch'])->name('report-branch.index');
+    Route::get('/inventory-report-branch', [InventoryReportController::class, 'indexBranch'])->name('inventory-report-branch.index');
+    Route::get('/inventory-report-branch-excel', [InventoryReportController::class, 'downloadBranchExcel'])->name('inventory-report-branch.excel');
+    Route::get('/inventory-report-branch-pdf', [InventoryReportController::class, 'downloadBranchPDF'])->name('inventory-report-branch.pdf');
+    Route::get('/inventory-report-branch-chart', [InventoryReportController::class, 'chartBranch'])->name('inventory-report-branch.chart');
+    Route::get('/inventory-report-branch-line-chart', [InventoryReportController::class, 'lineChartBranch'])->name('inventory-report-branch.line-chart');
   });
 
   // shared components

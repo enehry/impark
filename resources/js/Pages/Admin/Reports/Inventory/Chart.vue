@@ -24,7 +24,7 @@
                             :key="branch.id"
                             :value="branch.id"
                         >
-                            {{ branch.name }}2
+                            {{ branch.name }}
                         </option>
                     </select>
                 </div>

@@ -55,7 +55,7 @@ defineProps({
             >
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
-            <MenuTile label="Reports">
+            <MenuTile label="Reports" routeName="report-branch.index">
                 <DocumentReportIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
