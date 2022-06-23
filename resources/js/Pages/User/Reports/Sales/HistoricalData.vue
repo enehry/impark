@@ -2,9 +2,9 @@
     <table-layout
         title="Previous Sales Report "
         backRoute="sales-report-branch.index"
-        note="You can change the branch, and product type by the dropdown select. 
+        note="You can change the product type by the dropdown select. 
         Clicking the colum header will sort the data by that column.
-         No selected start date or end date will show today sales.
+         No selected start date or end date will show all the sales.
          Start date and end date will show sales between the selected dates."
     >
         <Head title="Sales Report" />

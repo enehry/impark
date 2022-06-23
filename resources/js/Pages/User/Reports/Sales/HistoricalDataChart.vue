@@ -2,8 +2,8 @@
     <table-layout
         title="Chart Sales Report"
         backRoute="sales-report-branch.historical-index"
-        note="You can choose a specific sales of the branch by 
-        clicking the selection dropdown or filter by daily, weekly, monthly and yearly.
+        note="You can filter the sales by daily, weekly, monthly and yearly.
+        You can also filter the sales start date and the end date and
         you can save the chart by right click and save as image."
     >
         <Head title="Chart Sales Report" />

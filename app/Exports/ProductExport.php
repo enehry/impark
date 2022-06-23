@@ -156,8 +156,8 @@ class ProductExport implements
         $branch = $this->branch ? $this->branch : 'All';
         // assign cell values
         $event->sheet->setCellValue('A1', 'IMPARK');
-        $event->sheet->setCellValue('A2', 'BRANCH: ' . $branch . ' STOCK REPORT ' .  now());
-        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'BRANCH: ' . $branch . ' STOCK REPORT ' . now());
+        $event->sheet->setCellValue('A2',  $branch . ' STOCK REPORT ' .  now());
+        $event->sheet->setCellValue(sprintf('A%d', $last_row), $branch . ' STOCK REPORT ' . now());
 
         // assign cell styles
         $event->sheet->getStyle('A1:A2')->applyFromArray($style_text_center);

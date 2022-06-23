@@ -68,7 +68,7 @@ Route::middleware([
     Route::get('/distribute-receivables', [DistributeReceivableController::class, 'index'])->name('distribute-receivables.index');
     Route::post('/distribute-receivables', [DistributeReceivableController::class, 'proceed'])->name('distribute-receivables.proceed');
 
-    Route::get('bypass-forecasting', [ForecastingController::class, 'bypassNextDay'])->name('forecasting.bypass');
+    Route::post('bypass-forecasting', [ForecastingController::class, 'bypassNextDay'])->name('forecasting.bypass');
     // reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     // Inventory reports

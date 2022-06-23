@@ -146,7 +146,7 @@
       @php
       $total_quantity = 0;
       @endphp
-      @foreach($issue->issueProducts as $issueProduct)
+      @foreach($issue_products as $issueProduct)
       <tr class="item">
         <td>{{ $issueProduct->stock->product->name }} </td>
 

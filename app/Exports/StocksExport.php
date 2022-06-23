@@ -196,8 +196,8 @@ class StocksExport implements
 
         // assign cell values
         $event->sheet->setCellValue('A1', 'IMPARK');
-        $event->sheet->setCellValue('A2', 'BRANCH: ' . Auth::user()->branch->name . ' STOCK REPORT ' . now());
-        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'BRANCH: ' . Auth::user()->branch->name . ' STOCK REPORT ' . now());
+        $event->sheet->setCellValue('A2', Auth::user()->branch->name . ' STOCK REPORT ' . now());
+        $event->sheet->setCellValue(sprintf('A%d', $last_row), Auth::user()->branch->name . ' STOCK REPORT ' . now());
 
         // assign cell styles
         $event->sheet->getStyle('A1:A2')->applyFromArray($style_text_center);

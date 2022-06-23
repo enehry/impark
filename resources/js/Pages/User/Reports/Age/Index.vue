@@ -2,7 +2,7 @@
     <table-layout
         :title="`Age Report ${today}`"
         backRoute="report-branch.index"
-        note="You can filter the age report by branch or by type of product."
+        note="You can filter the age report by type of product. Clicking the column header will sort the data by that column."
     >
         <Head title="Inventory Report" />
         <div

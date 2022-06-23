@@ -2,7 +2,7 @@
     <table-layout
         title="Inventory Report Pie Chart"
         backRoute="inventory-report-branch.index"
-        note="You can choose a specific count/percentage of a branch by selecting it in the dropdown."
+        note="The chart display the stocks of the products in the inventory."
     >
         <Head title="Inventory Report Pie Chart" />
         <div class="bg-white shadow-lg rounded-md dark:bg-gray-700 p-4">

@@ -2,7 +2,7 @@
     <table-layout
         :title="`Inventory Report ${today}`"
         backRoute="report-branch.index"
-        note="You can choose stock of a specific branch by selecting it in the dropdown."
+        note="You can choose type of product using the dropdown. Clicking the column header will sort the data by that column."
     >
         <Head title="Inventory Report" />
         <div
@@ -302,11 +302,15 @@ export default {
             handler: throttle(function () {
                 let params = pickBy(this.params);
 
-                this.$inertia.get(route("inventory-report.index"), params, {
-                    preserveState: true,
-                    replace: true,
-                    preserveScroll: true,
-                });
+                this.$inertia.get(
+                    route("inventory-report-branch.index"),
+                    params,
+                    {
+                        preserveState: true,
+                        replace: true,
+                        preserveScroll: true,
+                    }
+                );
             }, 300),
             deep: true,
         },

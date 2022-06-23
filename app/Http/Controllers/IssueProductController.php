@@ -218,11 +218,16 @@ class IssueProductController extends Controller
     $branch_id = Auth::user()->branch_id;
     // get latest issue with issueProducts stocks and product filter with branch
     $issue = Issue::where('branch_id', $branch_id)
-      ->with(['issueProducts.stock.product', 'user'])
-      ->orderBy('id', 'desc')
+      ->with(['branch', 'user'])
+      ->orderBy('created_at', 'desc')
       ->first();
 
+    $issue_product = IssueProduct::where('issue_id', $issue->id)
+      ->with('stock.product')
+      ->get();
+
     // return response()->json([
+    //   'issue_products' => $issue_product,
     //   'issue' => $issue,
     // ]);
 
@@ -235,6 +240,7 @@ class IssueProductController extends Controller
 
     $pdf = PDF::loadView('exports/issue_product_receipt', [
       'issue' => $issue,
+      'issue_products' => $issue_product,
     ]);
     return $pdf->download('receipt-' . $issue->id . '.pdf');
   }

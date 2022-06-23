@@ -17,7 +17,7 @@ class AgeReportController extends Controller
   {
     $request->validate([
       'direction' => 'in:asc,desc',
-      'field' => 'in:name,price,type,quantity',
+      'field' => 'in:name,price,type,quantity,date,age,branch_name',
       'branch_id' =>  'numeric|exists:branches,id',
       'type' => 'in:pork,beef,chicken',
     ]);
@@ -160,7 +160,7 @@ class AgeReportController extends Controller
   {
     $request->validate([
       'direction' => 'in:asc,desc',
-      'field' => 'in:name,price,type,quantity',
+      'field' => 'in:name,price,type,quantity,date,age,branch_name',
       'type' => 'in:pork,beef,chicken',
     ]);
 

@@ -2,7 +2,7 @@
     <table-layout
         :title="`Sales Report ${today}`"
         backRoute="report-branch.index"
-        note="You can change the branch, and product type by the dropdown select. Clicking the colum header will sort the data by that column."
+        note="You can change the product type by the dropdown select and clicking the colum header will sort the data by that column."
     >
         <Head :title="`Sales Report ${today}`" />
         <div
