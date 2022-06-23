@@ -164,8 +164,8 @@ class AgeReportExport implements
         $branch = $this->branch ? strtoupper($this->branch) : 'ALL';
         // assign cell values
         $event->sheet->setCellValue('A1', 'IMPARK');
-        $event->sheet->setCellValue('A2', 'BRANCH: ' . $branch . ' AGE REPORT ' .  now());
-        $event->sheet->setCellValue(sprintf('A%d', $last_row), 'BRANCH: ' . $branch . ' AGE REPORT ' . now());
+        $event->sheet->setCellValue('A2', $branch . ' AGE REPORT ' .  now());
+        $event->sheet->setCellValue(sprintf('A%d', $last_row), $branch . ' AGE REPORT ' . now());
 
         // assign cell styles
         $event->sheet->getStyle('A1:A2')->applyFromArray($style_text_center);

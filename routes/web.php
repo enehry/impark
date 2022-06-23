@@ -114,6 +114,20 @@ Route::middleware([
     Route::get('/inventory-report-branch-pdf', [InventoryReportController::class, 'downloadBranchPDF'])->name('inventory-report-branch.pdf');
     Route::get('/inventory-report-branch-chart', [InventoryReportController::class, 'chartBranch'])->name('inventory-report-branch.chart');
     Route::get('/inventory-report-branch-line-chart', [InventoryReportController::class, 'lineChartBranch'])->name('inventory-report-branch.line-chart');
+
+    // sales
+    Route::get('/sales-report-branch', [SalesReportController::class, 'indexBranch'])->name('sales-report-branch.index');
+    Route::get('/sales-report-branch-excel', [SalesReportController::class, 'downloadBranchExcel'])->name('sales-report-branch.excel');
+    Route::get('/sales-report-branch-pdf', [SalesReportController::class, 'downloadBranchPDF'])->name('sales-report-branch.pdf');
+    route::get('/sales-historical-data-branch-index', [SalesReportController::class, 'historicalDataIndex'])->name('sales-report-branch.historical-index');
+    route::get('/sales-historical-data-branch-excel', [SalesReportController::class, 'downloadHistoricalDataBranchExcel'])->name('sales-report-branch.historical-excel');
+    route::get('/sales-historical-data-branch-pdf', [SalesReportController::class, 'downloadHistoricalDataBranchPDF'])->name('sales-report-branch.historical-pdf');
+    Route::get('/sales-report-branch-chart', [SalesReportController::class, 'chartBranch'])->name('sales-report-branch.chart');
+
+    // age report
+    Route::get('/age-report-branch', [AgeReportController::class, 'indexBranch'])->name('age-report-branch.index');
+    Route::get('/age-report-branch-excel', [AgeReportController::class, 'downloadAgeReportBranchExcel'])->name('age-report-branch.excel');
+    Route::get('/age-report-branch-pdf', [AgeReportController::class, 'downloadAgeReportBranchPDF'])->name('age-report-branch.pdf');
   });
 
   // shared components

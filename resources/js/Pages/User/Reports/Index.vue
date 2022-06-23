@@ -29,14 +29,17 @@ defineProps({
             >
                 <CubeIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
-            <MenuTile label="Sales Reports" routeName="sales-report.index">
+            <MenuTile
+                label="Sales Reports"
+                routeName="sales-report-branch.index"
+            >
                 <DocumentReportIcon
                     class="w-12 h-12 text-white dark:text-gray-500"
                 />
             </MenuTile>
             <MenuTile
                 label="Age Reports"
-                routeName="age-report.index"
+                routeName="age-report-branch.index"
                 :counter="age_counter"
             >
                 <DocumentTextIcon

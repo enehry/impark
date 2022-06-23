@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StockAge;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class ReportController extends Controller
@@ -45,6 +46,9 @@ class ReportController extends Controller
         '=',
         'stocks.product_id'
       )
+      ->when(Auth::user()->role == 2, function ($query) {
+        return $query->where('stock_ages.branch_id', Auth::user()->branch_id);
+      })
       ->whereRaw('DATEDIFF(NOW(), stock_ages.created_at) >= products.maximum_shelf_life')->count();
 
     return Inertia::render('User/Reports/Index', [

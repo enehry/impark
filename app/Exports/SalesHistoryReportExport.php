@@ -171,11 +171,11 @@ class SalesHistoryReportExport implements
         $event->sheet->mergeCells(sprintf('A2:%s2', $last_column));
         $event->sheet->mergeCells(sprintf('A%d:%s%d', $last_row, $last_column, $last_row));
 
-        $branch = $this->branch ? $this->branch : 'ALL';
+        $branch = $this->branch ? strtoupper($this->branch)  : 'ALL';
 
         // start date to end date
-        $header = $this->start_date ? $this->group_by . ' SALES REPORT OF ' . $branch . ' BRANCH FROM ' . $this->start_date . ' to ' . $this->end_date :
-          $this->group_by .  ' SALES REPORT ' . $branch . ' BRANCH FROM ';
+        $header = $this->start_date ? $this->group_by . ' SALES REPORT OF ' . $branch . ' FROM ' . $this->start_date . ' TO ' . $this->end_date :
+          $this->group_by .  ' SALES REPORT ' . $branch;
 
 
         // assign cell values
