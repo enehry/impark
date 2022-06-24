@@ -11,6 +11,7 @@ import {
     UsersIcon,
     DocumentReportIcon,
     DocumentTextIcon,
+    SwitchHorizontalIcon,
 } from "@heroicons/vue/outline";
 import MenuLayout from "../Layouts/MenuLayout.vue";
 defineProps({
@@ -77,6 +78,11 @@ defineProps({
                 routeName="users.index"
             >
                 <UsersIcon class="w-12 h-12 text-white dark:text-gray-500" />
+            </MenuTile>
+            <MenuTile label="Transactions" routeName="transactions.index">
+                <SwitchHorizontalIcon
+                    class="w-12 h-12 text-white dark:text-gray-500"
+                />
             </MenuTile>
             <MenuTile label="Reports" routeName="reports.index">
                 <DocumentReportIcon

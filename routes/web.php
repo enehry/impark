@@ -17,6 +17,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\UserLogController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TransactionController;
 use Inertia\Inertia;
 
 /*
@@ -67,6 +68,10 @@ Route::middleware([
     // distribute receivable
     Route::get('/distribute-receivables', [DistributeReceivableController::class, 'index'])->name('distribute-receivables.index');
     Route::post('/distribute-receivables', [DistributeReceivableController::class, 'proceed'])->name('distribute-receivables.proceed');
+
+    Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
+    Route::get('/transactions-download-excel', [TransactionController::class, 'downloadExcel'])->name('transactions.download-excel');
+    Route::get('/transactions-download-pdf', [TransactionController::class, 'downloadPDF'])->name('transactions.download-pdf');
 
     Route::post('bypass-forecasting', [ForecastingController::class, 'bypassNextDay'])->name('forecasting.bypass');
     // reports

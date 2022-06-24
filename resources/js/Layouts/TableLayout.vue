@@ -6,7 +6,7 @@
                 :routeName="backRoute"
                 :note="note"
             />
-            <div class="w-full h-full">
+            <div class="w-full h-full pb-8">
                 <slot></slot>
             </div>
         </div>
