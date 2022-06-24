@@ -110,6 +110,9 @@ Route::middleware([
     Route::post('/confirm-forecast', [ForecastingController::class, 'confirmForecast'])->name('forecast.confirm');
 
     Route::get('/receive-products', [ReceiveProductController::class, 'index'])->name('receive-products.index');
+    Route::get('/receive-products/logs', [ReceiveProductController::class, 'ReceivedProductLogs'])->name('receive-products-logs.index');
+    Route::get('/received-products-download-pdf', [ReceiveProductController::class, 'downloadPDF'])->name('received-products.pdf');
+    Route::get('/received-products-download-excel', [ReceiveProductController::class, 'downloadExcel'])->name('received-products.excel');
     Route::post('/receive-products-received', [ReceiveProductController::class, 'receiveProducts'])->name('receive-products.received');
 
     // reports
