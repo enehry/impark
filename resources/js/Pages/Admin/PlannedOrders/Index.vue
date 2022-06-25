@@ -19,7 +19,7 @@
             {{ error.message }}
         </div>
         <div
-            class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-t-lg shadow-md"
+            class="flex justify-between sm:items-center items-start p-4 bg-white dark:bg-gray-800 rounded-t-lg shadow-md"
         >
             <div class="block sm:flex items-center gap-4">
                 <div>
@@ -68,7 +68,7 @@
                     </select>
                 </div>
             </div>
-            <div class="flex justify-end gap-2">
+            <div class="flex justify-end gap-2 sm:mt-0 mt-2">
                 <Link :href="route('planned-orders.all-trashed')">
                     <button
                         data-tooltip-target="tooltip-archived-orders"

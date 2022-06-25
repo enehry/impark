@@ -10,7 +10,7 @@
             label="Restore archived planned orders"
         ></tooltip>
         <div
-            class="flex justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-t-lg shadow-md"
+            class="flex sm:flex-row flex-col gap-1 justify-between items-center p-4 bg-white dark:bg-gray-800 rounded-t-lg shadow-md"
         >
             <div class="block sm:flex items-center gap-4">
                 <div>

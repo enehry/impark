@@ -34,7 +34,7 @@ class DatabaseSeeder extends Seeder
     ]);
 
     // create 3 branches
-    for ($i = 0; $i < 3; $i++) {
+    for ($i = 1; $i <= 3; $i++) {
       Branch::create([
         'name' => "Branch $i",
         'address' => "Address $i",

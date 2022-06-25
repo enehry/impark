@@ -11,7 +11,7 @@
             {{ error.message }}
         </div>
         <div
-            class="flex items-center gap-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-md shadow-md mb-8"
+            class="flex items-end md:items-center gap-4 bg-gray-50 dark:bg-gray-800 p-4 rounded-md shadow-md mb-8"
         >
             <div class="flex md:flex-row flex-col items-center gap-4 w-2/3">
                 <div class="w-full">

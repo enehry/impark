@@ -21,11 +21,9 @@ class BOMController extends Controller
       'type' => 'in:chicken,pork,beef'
     ]);
 
-    $query = Product::query();
-    if ($request->has('search')) {
-      $query->where('name', 'like', '%' . $request->search . '%');
-    }
-
+    $query = Product::when($request->has('search'), function ($query) use ($request) {
+        $query->where('name', 'like', '%' . $request->search . '%');
+      });
     if ($request->has(['field', 'direction'])) {
       $query->orderBy($request->field, $request->direction);
     }
@@ -35,7 +33,7 @@ class BOMController extends Controller
     }
 
     return Inertia::render('Admin/BOM/Index', [
-      'products' => $query->paginate(10),
+      'products' => $query->paginate(20)->withQueryString(),
       'bom_filter' => $request->All(['search', 'field', 'direction', 'type'])
     ]);
   }

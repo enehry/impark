@@ -159,6 +159,22 @@ class ProductController extends Controller
     $product->maximum_shelf_life = $request->maximum_shelf_life;
     $product->save();
 
+    // create also a stock for all the branch
+    $branches = Branch::all();
+    foreach ($branches as $branch) {
+      $stock = Stock::where('branch_id', $branch->id)->where('product_id', $product->id)->first();
+      if ($stock) {
+        $stock->quantity = 0;
+        $stock->save();
+      } else {
+        Stock::create([
+          'branch_id' => $branch->id,
+          'product_id' => $product->id,
+          'quantity' => 0,
+        ]);
+      }
+    }
+
     // log action
     LogHelper::log(
       'updated',
@@ -181,6 +197,13 @@ class ProductController extends Controller
   {
     //
     $product->delete();
+
+    // delete also the stocks
+    $stocks = Stock::where('product_id', $product->id)->get();
+    foreach ($stocks as $stock) {
+      $stock->delete();
+    }
+
 
     // log action
     LogHelper::log(

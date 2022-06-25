@@ -68,12 +68,12 @@ export default {
         },
         formatted_delivered_at() {
             return this.stock.formatted_delivered_at === null
-                ? "Not Delivered"
+                ? "Not yet deliver"
                 : this.stock.formatted_delivered_at;
         },
         formatted_received_at() {
             return this.stock.formatted_received_at === null
-                ? "Not Received"
+                ? "Not yet receive"
                 : this.stock.formatted_received_at;
         },
         is_not_delivered() {

@@ -270,8 +270,15 @@ const logout = () => {
                                 </JetResponsiveNavLink>
                             </form>
                         </div>
-                        <button>
-                            <moon-icon class="h-6 w-6" />
+                        <button @click.prevent="changeTheme">
+                            <MoonIcon
+                                v-if="isDark"
+                                class="w-4 h-4 ml-4 text-gray-600"
+                            />
+                            <SunIcon
+                                v-else
+                                class="w-4 h-4 ml-4 text-gray-600"
+                            />
                         </button>
                     </div>
                 </div>

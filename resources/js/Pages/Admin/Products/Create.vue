@@ -152,7 +152,7 @@ export default {
             form: useForm({
                 name: "",
                 price: "",
-                reordering_point: "5",
+                reordering_point: "50",
                 maximum_shelf_life: "4",
                 type: "",
             }),

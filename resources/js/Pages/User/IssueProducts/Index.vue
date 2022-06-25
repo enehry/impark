@@ -1,5 +1,9 @@
 <template>
-    <table-layout title="ISSUE PRODUCTS/BRANCH">
+    <table-layout
+        title="ISSUE PRODUCTS-BRANCH"
+        note="The type of product is optional you can use it to easily find specific kind of product.
+      You can search, add stocks and click enter to save the product in the list."
+    >
         <Head title="ISSUE PRODUCTS-BRANCH" />
 
         <div
@@ -72,7 +76,7 @@
                     />
                 </div>
                 <div class="w-full flex justify-end">
-                    <div>
+                    <div class="w-full">
                         <label
                             for="countries"
                             readonly
@@ -82,9 +86,10 @@
                         >
                         <jet-button
                             @click.prevent="onAddProduct"
-                            class="py-2.5"
+                            class="py-2.5 w-full flex gap-2 items-center justify-center"
                         >
                             Add this product
+                            <check-icon class="w-4 h-4" />
                         </jet-button>
                     </div>
                 </div>
@@ -207,7 +212,7 @@ import JetButton from "@/Jetstream/Button.vue";
 import Empty from "@/Components/Empty.vue";
 import JetModal from "@/Jetstream/Modal.vue";
 
-import { TrashIcon } from "@heroicons/vue/outline";
+import { TrashIcon, CheckIcon } from "@heroicons/vue/outline";
 export default {
     components: {
         TableLayout,
@@ -218,6 +223,7 @@ export default {
         Empty,
         TrashIcon,
         JetModal,
+        CheckIcon,
     },
     name: "IssueProductsIndex",
     props: {
