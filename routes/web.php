@@ -50,6 +50,7 @@ Route::middleware([
     Route::resource('/products', ProductController::class);
     Route::get('/products-excel', [ProductController::class, 'downloadExcel'])->name('products.excel');
     Route::get('/products-pdf', [ProductController::class, 'downloadPDF'])->name('products.pdf');
+    Route::post('/products-import', [ProductController::class, 'importProducts'])->name('products.import');
 
     Route::get('/bom', [BOMController::class, 'index'])->name('bom.index');
     Route::put('/bom/update-price', [BOMController::class, 'updatePrice'])->name('bom.update-price');

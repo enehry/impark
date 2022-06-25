@@ -4,6 +4,7 @@
         note="You can edit the product by clicking the pencil icon and delete with trash icon, clicking the column header will sort the product."
     >
         <Head title="Products" />
+        <JetValidationErrors />
         <div
             class="w-full flex md:flex-row gap-2 flex-col justify-between items-center p-4 bg-white dark:bg-gray-800 sm:rounded-t-lg shadow-md"
         >
@@ -72,6 +73,13 @@
             </div>
 
             <div class="flex gap-2 items-center">
+                <button
+                    @click="showImportModal = true"
+                    class="text-blue-500 hover:text-blue-300 uppercase text-xs flex items-center"
+                >
+                    <UploadIcon class="w-5 h-5" />
+                    <div class="text-gray-500">Import</div>
+                </button>
                 <a
                     :href="route('products.pdf', params)"
                     class="text-red-500 hover:text-red-300 uppercase text-xs flex items-center"
@@ -279,6 +287,75 @@
                 <jet-button @click.prevent="destroy()">OK</jet-button>
             </template>
         </jet-confirmation-modal>
+        <jet-dialog-modal :show="showImportModal">
+            <template #title>
+                <h1 class="font-medium">Import Products</h1>
+            </template>
+            <template #content>
+                <div class="flex justify-center items-center w-full">
+                    <label
+                        for="dropzone-file"
+                        class="flex flex-col justify-center items-center w-full h-64 bg-gray-50 rounded-lg border-2 border-gray-300 border-dashed cursor-pointer dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    >
+                        <div
+                            class="flex flex-col justify-center items-center pt-5 pb-6"
+                        >
+                            <svg
+                                class="mb-3 w-10 h-10 text-gray-400"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                                ></path>
+                            </svg>
+                            <p
+                                class="mb-2 text-sm text-gray-500 dark:text-gray-400"
+                            >
+                                <span class="font-semibold"
+                                    >Click to upload</span
+                                >
+                                or drag and drop
+                            </p>
+                            <p
+                                v-if="file === null || file === undefined"
+                                class="text-xs text-gray-500 dark:text-gray-400"
+                            >
+                                Excel or CSV file
+                            </p>
+                            <p
+                                v-else
+                                class="text-xs text-gray-500 dark:text-gray-400"
+                            >
+                                {{ file.name }}
+                            </p>
+                        </div>
+                        <input
+                            @change="onFileChange"
+                            id="dropzone-file"
+                            type="file"
+                            class="hidden"
+                        />
+                    </label>
+                </div>
+            </template>
+            <template #footer>
+                <button
+                    @click="onCancel"
+                    class="border-2 border-red-500 hover:bg-red-500 hover:text-white text-red-500 font-medium rounded-md px-2 mr-2"
+                >
+                    Cancel
+                </button>
+                <jet-button @click.prevent="importProducts"
+                    >Import</jet-button
+                ></template
+            >
+        </jet-dialog-modal>
     </table-layout>
 </template>
 
@@ -292,6 +369,7 @@ import pickBy from "lodash/pickBy";
 import Pagination from "@/Components/Pagination.vue";
 import throttle from "lodash/throttle";
 import Empty from "@/Components/Empty.vue";
+import JetDialogModal from "@/Jetstream/DialogModal.vue";
 import {
     PlusIcon,
     DocumentTextIcon,
@@ -300,7 +378,9 @@ import {
     SortAscendingIcon,
     SortDescendingIcon,
     DocumentDownloadIcon,
+    UploadIcon,
 } from "@heroicons/vue/solid";
+import JetValidationErrors from "@/Jetstream/ValidationErrors.vue";
 export default {
     components: {
         TableLayout,
@@ -318,6 +398,9 @@ export default {
         SortDescendingIcon,
         DocumentDownloadIcon,
         Empty,
+        UploadIcon,
+        JetDialogModal,
+        JetValidationErrors,
     },
     props: {
         products_admin: {
@@ -336,6 +419,7 @@ export default {
     data() {
         return {
             isShow: false,
+            showImportModal: false,
             productId: null,
             params: {
                 search: this.products_filter.search,
@@ -344,6 +428,7 @@ export default {
                 branch: this.products_filter.branch,
                 type: this.products_filter.type,
             },
+            file: null,
         };
     },
     computed: {
@@ -359,9 +444,13 @@ export default {
         destroy() {
             this.isShow = false;
             if (this.productId) {
-                this.$inertia.post(
+                this.$inertia.visit(
                     route("products.destroy", { product: this.productId }),
-                    { _method: "DELETE" }
+                    {
+                        method: "DELETE",
+                        preserveState: true,
+                        preserveScroll: true,
+                    }
                 );
             }
         },
@@ -369,6 +458,31 @@ export default {
             this.params.field = field;
             this.params.direction =
                 this.params.direction === "asc" ? "desc" : "asc";
+        },
+        toggleImportModal() {
+            this.showImportModal = !this.showImportModal;
+        },
+        importProducts() {
+            this.$inertia.post(
+                route("products.import"),
+                {
+                    file: this.file,
+                },
+                {
+                    preserveState: false,
+                    forceFormData: true,
+                    onSuccess: (response) => {
+                        this.showImportModal = false;
+                    },
+                }
+            );
+        },
+        onFileChange(e) {
+            this.file = e.target.files[0];
+        },
+        onCancel() {
+            this.showImportModal = false;
+            this.file = null;
         },
     },
     watch: {

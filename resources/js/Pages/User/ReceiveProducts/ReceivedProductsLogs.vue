@@ -1,10 +1,10 @@
 <template>
     <table-layout
-        title="Transactions"
+        title="Received Product Logs"
         backRoute="receive-products.index"
         note="You can change the range of received date and select and specific products."
     >
-        <Head title="Transactions" />
+        <Head title="Received Products Logs" />
         <div
             class="flex flex-col gap-2 shadow-md justify-between p-4 bg-white dark:bg-gray-800 md:rounded-t-lg"
         >

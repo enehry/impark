@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Exports\ProductExport;
+use App\Imports\ProductImport;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
@@ -212,7 +213,7 @@ class ProductController extends Controller
       'products',
       [$product->id]
     );
-    return Redirect::route('products.index')->banner('Product deleted successfully');
+    return Redirect::back()->banner('Product deleted successfully');
   }
 
   public function downloadExcel(Request $request)
@@ -304,5 +305,18 @@ class ProductController extends Controller
 
     // download excel in export product
     return Excel::download(new ProductExport($query, $branch), 'stocks-' . now()->toDateString() . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+  }
+
+  public function importProducts(Request $request)
+  {
+    // validate the file
+    $request->validate([
+      'file' => 'required|mimes:xls,xlsx',
+    ]);
+
+    // import the file to the database
+    $import = Excel::import(new ProductImport, $request->file('file'));
+
+    return Redirect::back()->banner('Products imported successfully');
   }
 }
