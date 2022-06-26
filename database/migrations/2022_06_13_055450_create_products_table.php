@@ -16,7 +16,7 @@ return new class extends Migration
     Schema::create('products', function (Blueprint $table) {
       $table->id();
       $table->string('name');
-      $table->enum('type', ['beef', 'chicken', 'pork']);
+      $table->enum('type', ['chicken', 'pork', 'beef']);
       $table->double('price');
       $table->integer('reordering_point')->default(20);
       $table->integer('maximum_shelf_life')->default(4);

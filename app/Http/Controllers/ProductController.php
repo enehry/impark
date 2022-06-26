@@ -311,7 +311,7 @@ class ProductController extends Controller
   {
     // validate the file
     $request->validate([
-      'file' => 'required|mimes:xls,xlsx',
+      'file' => 'required|mimes:xls,xlsx,csv',
     ]);
 
     // import the file to the database

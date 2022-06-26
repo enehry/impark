@@ -6,24 +6,27 @@ use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
 use Illuminate\Support\Collection;
-use Maatwebsite\Excel\Concerns\ToCollection;
+use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
-class ProductImport implements ToModel, WithValidation, WithHeadingRow
+class ProductImport implements WithValidation, WithHeadingRow, ToModel
 {
-  /**
-   * @param Collection $collection
-   */
+
   public function model(array $row)
   {
-    //
-    $product = Product::create([
-      'name' => $row['name'] ?? $row['product_name'] ?? $row['PRODUCT_NAME'] ?? $row['NAME'],
-      'price' => $row['price'] ?? $row['PRICE'] ?? $row['PRODUCT_PRICE'],
-      'type' => $row['type'] ?? $row['PRODUCT_TYPE'] ?? $row['TYPE'],
-    ]);
+
+    $product = Product::updateOrCreate(
+      ['name' => $row['product_name'], 'type' => $row['type']],
+      [
+        'name' => $row['product_name'],
+        'type' => strtolower($row['type']),
+        'price' => $row['price'],
+        'default_kg_per_day' => $row['kg_per_day'] ?? 20,
+        'reordering_point' => round(($row['kg_per_day'] ?? 20 * 3) + ($row['kg_per_day'] ?? 20 / 3)),
+      ]
+    );
 
     if ($product) {
       // create stocks in all branches
@@ -36,15 +39,25 @@ class ProductImport implements ToModel, WithValidation, WithHeadingRow
       });
     }
 
-    return $product;
+    // return $product;
   }
+  // public function collection(Collection $rows)
+  // {
+  //   foreach ($rows as $row) {
+  //     Product::create([
+  //       'name' => $row['product_name'],
+  //       'price' => $row['price'],
+  //       'type' => $row['type'],
+  //     ]);
+  //   }
+  // }
 
   public function rules(): array
   {
     return [
-      'product_name' => 'required|unique:products,name',
+      'product_name' => 'required|string|max:255',
+      'type' => 'required|in:chicken,pork,beef,Chicken,Pork,Beef',
       'price' => 'required|numeric',
-      'type' => 'required|in:chicken,pork,beef',
     ];
   }
 

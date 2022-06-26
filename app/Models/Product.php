@@ -12,7 +12,7 @@ class Product extends Model
   protected $fillable = [
     'name',
     'price',
-    'type,',
+    'type',
     'reordering_point',
     'maximum_shelf_life',
     'default_kg_per_day',

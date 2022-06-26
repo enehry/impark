@@ -45,6 +45,6 @@ class DatabaseSeeder extends Seeder
     // create 3 users
 
     // call product seeder for creating products and stocks for all branches
-    $this->call([ProductSeeder::class, StockSeeder::class]);
+    // $this->call([ProductSeeder::class, StockSeeder::class]);
   }
 }
