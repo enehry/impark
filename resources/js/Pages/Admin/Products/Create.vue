@@ -153,7 +153,7 @@ export default {
                 name: "",
                 price: "",
                 reordering_point: "50",
-                maximum_shelf_life: "4",
+                maximum_shelf_life: "3",
                 type: "",
             }),
         };

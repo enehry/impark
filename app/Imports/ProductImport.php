@@ -28,7 +28,8 @@ class ProductImport implements WithValidation, WithHeadingRow, ToModel
       ]
     );
 
-    if ($product) {
+    if ($product->wasRecentlyCreated) {
+      // updateOrCreate performed create
       // create stocks in all branches
       Branch::all()->each(function ($branch) use ($product) {
         Stock::create([
@@ -38,6 +39,10 @@ class ProductImport implements WithValidation, WithHeadingRow, ToModel
         ]);
       });
     }
+
+
+
+
 
     // return $product;
   }

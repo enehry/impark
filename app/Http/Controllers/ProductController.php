@@ -27,7 +27,7 @@ class ProductController extends Controller
     //
     $request->validate([
       'direction' => 'in:asc,desc',
-      'field' => 'in:name,price,type,quantity',
+      'field' => 'in:name,price,type,quantity,id',
       'branch_id' =>  'numeric|exists:branches,id',
       'type' => 'in:pork,beef,chicken',
     ]);

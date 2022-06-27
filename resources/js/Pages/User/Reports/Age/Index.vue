@@ -215,7 +215,7 @@
                             <div
                                 :class="{
                                     'bg-red-300 rounded-lg p-1 dark:bg-red-500 text-red-700':
-                                        stock.age >= 4,
+                                        stock.age >= stock.maximum_shelf_life,
                                 }"
                             >
                                 {{ stock.status }}

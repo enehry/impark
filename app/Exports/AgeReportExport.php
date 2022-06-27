@@ -174,7 +174,7 @@ class AgeReportExport implements
 
         // color the row that are age > 3
         for ($i = 0; $i < count($this->data); $i++) {
-          if ($this->data[$i]->age > 3) {
+          if ($this->data[$i]->age >= $this->data[$i]['maximum_shelf_life']) {
             $event->sheet->getStyle(sprintf('A%d:H%d', $i + 4, $i + 4))->applyFromArray([
               'fill' => [
                 'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,

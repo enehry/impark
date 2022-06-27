@@ -121,6 +121,25 @@
                 >
                     <tr>
                         <th scope="col" class="px-6 py-3 cursor-pointer">
+                            <span class="flex gap-1" @click.prevent="sort('id')"
+                                >ID
+                                <div class="w-4 h-4">
+                                    <sort-ascending-icon
+                                        v-if="
+                                            params.field === 'id' &&
+                                            params.direction === 'asc'
+                                        "
+                                    />
+                                    <sort-descending-icon
+                                        v-if="
+                                            params.field === 'id' &&
+                                            params.direction === 'desc'
+                                        "
+                                    />
+                                </div>
+                            </span>
+                        </th>
+                        <th scope="col" class="px-6 py-3 cursor-pointer">
                             <span
                                 class="flex gap-1"
                                 @click.prevent="sort('name')"
@@ -220,6 +239,9 @@
                         :key="stock.id"
                         class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
+                        <td class="px-6 py-4 uppercase">
+                            {{ stock.id }}
+                        </td>
                         <th
                             scope="row"
                             class="px-6 py-4 font-medium text-gray-900 dark:text-white whitespace-nowrap"
@@ -347,11 +369,20 @@
             <template #footer>
                 <button
                     @click="onCancel"
+                    :class="{
+                        'opacity-50 cursor-wait': isLoading,
+                    }"
+                    :disabled="isLoading"
                     class="border-2 border-red-500 hover:bg-red-500 hover:text-white text-red-500 font-medium rounded-md px-2 mr-2"
                 >
                     Cancel
                 </button>
-                <jet-button @click.prevent="importProducts"
+                <jet-button
+                    @click.prevent="importProducts"
+                    :disabled="isLoading"
+                    :class="{
+                        'opacity-50 cursor-wait': isLoading,
+                    }"
                     >Import</jet-button
                 ></template
             >
@@ -420,6 +451,7 @@ export default {
         return {
             isShow: false,
             showImportModal: false,
+            isLoading: false,
             productId: null,
             params: {
                 search: this.products_filter.search,
@@ -463,6 +495,7 @@ export default {
             this.showImportModal = !this.showImportModal;
         },
         importProducts() {
+            this.isLoading = true;
             this.$inertia.post(
                 route("products.import"),
                 {
@@ -472,6 +505,7 @@ export default {
                     preserveState: false,
                     forceFormData: true,
                     onSuccess: (response) => {
+                        this.isLoading = false;
                         this.showImportModal = false;
                     },
                 }

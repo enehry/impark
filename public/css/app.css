@@ -1849,6 +1849,9 @@ input:checked + .toggle-bg {
 .cursor-not-allowed {
   cursor: not-allowed;
 }
+.cursor-wait {
+  cursor: wait;
+}
 .resize {
   resize: both;
 }
@@ -2388,6 +2391,12 @@ input:checked + .toggle-bg {
 .pb-6 {
   padding-bottom: 1.5rem;
 }
+.pl-2 {
+  padding-left: 0.5rem;
+}
+.pl-6 {
+  padding-left: 1.5rem;
+}
 .text-left {
   text-align: left;
 }
@@ -2733,6 +2742,21 @@ input:checked + .toggle-bg {
   background-color: rgb(75 85 99 / var(--tw-bg-opacity)) !important;
   --tw-text-opacity: 1 !important;
   color: rgb(255 255 255 / var(--tw-text-opacity)) !important;
+}
+
+.odd\:bg-white:nth-child(odd) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(255 255 255 / var(--tw-bg-opacity));
+}
+
+.even\:bg-gray-50:nth-child(even) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
+}
+
+.even\:bg-gray-100:nth-child(even) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(243 244 246 / var(--tw-bg-opacity));
 }
 
 .hover\:border-gray-300:hover {
@@ -3267,6 +3291,16 @@ input:checked + .toggle-bg {
 
 .dark .dark\:ring-offset-gray-800 {
   --tw-ring-offset-color: #1F2937;
+}
+
+.dark .odd\:dark\:bg-gray-800:nth-child(odd) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(31 41 55 / var(--tw-bg-opacity));
+}
+
+.dark .even\:dark\:bg-gray-700:nth-child(even) {
+  --tw-bg-opacity: 1;
+  background-color: rgb(55 65 81 / var(--tw-bg-opacity));
 }
 
 .dark .dark\:hover\:border-gray-500:hover {
