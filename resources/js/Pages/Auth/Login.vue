@@ -48,7 +48,7 @@ const switchVisibility = () => {
     <JetAuthenticationCard>
         <div class="md:flex mt-10 mb-10">
             <div class="hidden md:block w-3/4 text-center">
-                <div class="content-center justify-center">
+                <div class="content-center justify-center items-center">
                     <div class="flex flex-col justify-center items-center">
                         <img
                             src="../../../assets/images/impark_logo.png"
@@ -60,9 +60,9 @@ const switchVisibility = () => {
                             Welcome Back!
                         </h1>
                     </div>
-                    <div class="img w-full -mt-4">
+                    <div class="img w-full">
                         <img
-                            class="w-full mx-auto"
+                            class="w-72 mx-auto"
                             src="../../../assets/images/login-side-bg.png"
                             alt=""
                             srcset=""
