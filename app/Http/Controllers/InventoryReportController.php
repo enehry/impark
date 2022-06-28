@@ -61,14 +61,19 @@ class InventoryReportController extends Controller
       ->when(request('branch_id'), function ($query) {
         return $query->where('branch_id', request('branch_id'));
       })
+      ->when(request('type'), function ($query) {
+        return $query->where('products.type', request('type'));
+      })
       ->groupBy('product_id')
       ->join('products', 'products.id', '=', 'stocks.product_id')
       ->get();
 
+
+
     return Inertia::render('Admin/Reports/Inventory/Chart', [
       'stocks_quantity' => $stocks,
       'inventory_branches' => Branch::All(['id', 'name']),
-      'inventory_filter' => request()->all(['branch_id']),
+      'inventory_filter' => request()->all(['branch_id', 'type']),
     ]);
   }
 
@@ -234,13 +239,18 @@ class InventoryReportController extends Controller
         'products.name as name',
         DB::raw('SUM(quantity) as quantity')
       )
+      ->when(request('type'), function ($query) {
+        $query->where('products.type', request('type'));
+      })
       ->where('branch_id', Auth::user()->branch_id)
       ->groupBy('product_id')
+
       ->join('products', 'products.id', '=', 'stocks.product_id')
       ->get();
 
     return Inertia::render('User/Reports/Inventory/Chart', [
       'stocks_quantity' => $stocks,
+      'inventory_report_filter' => request()->all(['type']),
     ]);
   }
 

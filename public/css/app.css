@@ -1846,11 +1846,11 @@ input:checked + .toggle-bg {
 .cursor-pointer {
   cursor: pointer;
 }
-.cursor-not-allowed {
-  cursor: not-allowed;
-}
 .cursor-wait {
   cursor: wait;
+}
+.cursor-not-allowed {
+  cursor: not-allowed;
 }
 .resize {
   resize: both;
@@ -2391,9 +2391,6 @@ input:checked + .toggle-bg {
 .pb-6 {
   padding-bottom: 1.5rem;
 }
-.pl-2 {
-  padding-left: 0.5rem;
-}
 .pl-6 {
   padding-left: 1.5rem;
 }
@@ -2747,11 +2744,6 @@ input:checked + .toggle-bg {
 .odd\:bg-white:nth-child(odd) {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity));
-}
-
-.even\:bg-gray-50:nth-child(even) {
-  --tw-bg-opacity: 1;
-  background-color: rgb(249 250 251 / var(--tw-bg-opacity));
 }
 
 .even\:bg-gray-100:nth-child(even) {

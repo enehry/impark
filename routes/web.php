@@ -35,6 +35,8 @@ Route::get('/', function () {
   return Inertia::render('Auth/Login',);
 });
 
+
+
 Route::middleware([
   'auth:sanctum',
   config('jetstream.auth_session'),
@@ -42,7 +44,10 @@ Route::middleware([
 ])->group(function () {
   Route::get('/', [MenuController::class, 'index'])->name('Menu');
 
+
+
   Route::middleware('admin')->group(function () {
+
     Route::resource('/branch', BranchController::class);
     Route::resource('/users', UserController::class);
 
@@ -100,6 +105,7 @@ Route::middleware([
   });
 
   Route::middleware('user')->group(function () {
+    Route::get('/stocks-test', [StockController::class, 'test'])->name('stocks.test');
     Route::get('/stocks', [StockController::class, 'index'])->name('stocks.index');
     Route::post('/stocks/update-forecast-setting', [StockController::class, 'updateOrCreateForecastSetting'])->name('stocks.forecast.update');
     Route::get('/stocks/export-pdf', [StockController::class, 'exportPDF'])->name('stocks.export.pdf');

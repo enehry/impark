@@ -19,7 +19,7 @@ return new class extends Migration
       $table->enum('type', ['chicken', 'pork', 'beef']);
       $table->double('price');
       $table->integer('reordering_point')->default(20);
-      $table->integer('maximum_shelf_life')->default(3);
+      $table->integer('maximum_shelf_life')->default(4);
       $table->integer('default_kg_per_day')->default(50);
       $table->timestamps();
     });

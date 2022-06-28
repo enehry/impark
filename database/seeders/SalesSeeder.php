@@ -31,11 +31,11 @@ class SalesSeeder extends Seeder
         'total_price' => $price * $rand_quantity,
         'issue_id' => rand(1, 10),
         // random month and day of year 2022 and not greater than current date
-        // 'created_at' => now()->subMonths(rand(1, 12))->subDays(rand(1, 28)),
-        // 'updated_at' => now()->subMonths(rand(1, 12))->subDays(rand(1, 28)),
+        'created_at' => now()->subMonths(rand(1, 12))->subDays(rand(1, 28)),
+        'updated_at' => now()->subMonths(rand(1, 12))->subDays(rand(1, 28)),
         // sales for today
-        'created_at' => now(),
-        'updated_at' => now(),
+        // 'created_at' => now(),
+        // 'updated_at' => now(),
       ]);
     }
   }

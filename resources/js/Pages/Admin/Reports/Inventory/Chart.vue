@@ -28,10 +28,23 @@
                         </option>
                     </select>
                 </div>
-                <div class="mb-0.5">
-                    <!-- <Link :href="route('inventory-report.line-chart')">
-                        <jet-button> Stocks/ROP Chart </jet-button>
-                    </Link> -->
+
+                <div>
+                    <label
+                        for="countries"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                        >Select Type</label
+                    >
+                    <select
+                        v-model="params.type"
+                        id="branches"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    >
+                        <option selected :value="null">All Type</option>
+                        <option value="chicken">Chicken</option>
+                        <option value="pork">Pork</option>
+                        <option value="beef">Beef</option>
+                    </select>
                 </div>
             </div>
             <div>
@@ -143,6 +156,7 @@ export default {
             chartType: "doughnut",
             params: {
                 branch_id: this.inventory_filter.branch_id,
+                type: this.inventory_filter.type,
             },
             chartData: {
                 labels: this.stocks_quantity.map(
@@ -168,14 +182,12 @@ export default {
             },
             chartOptions: {
                 parsing: {},
-
                 // label position
                 plugins: {
                     legend: {
-                        maxHeight: 50,
                         fullSize: false,
-                        position: "right",
-                        align: "start",
+                        position: "bottom",
+                        align: "center",
                         labels: {
                             usePointStyle: true,
                             boxWidth: 10,
@@ -184,6 +196,9 @@ export default {
                         title: {
                             display: true,
                             text: "PRODUCTS-STOCKS",
+                            padding: {
+                                top: 20,
+                            },
                         },
                     },
                 },

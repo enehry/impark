@@ -23,6 +23,8 @@ class StockController extends Controller
    */
   public function index(Request $request)
   {
+
+
     //
     $request->validate([
       'direction' => 'in:asc,desc',
@@ -152,13 +154,13 @@ class StockController extends Controller
 
     $forecastSetting = ForecastSetting::where('stock_id', $request->stock_id)->first();
 
+
     if ($forecastSetting) {
       $forecastSetting->update([
         'reordering_point' => $request->reordering_point,
         'default_kg_per_day' => $request->default_kg_per_day,
       ]);
     } else {
-
       $forecastSetting = ForecastSetting::create([
         'stock_id' => $request->stock_id,
         'reordering_point' => $request->reordering_point,
@@ -199,5 +201,14 @@ class StockController extends Controller
       []
     );
     return Excel::download(new StocksExport($request), 'stocks-' . Carbon::today()->toDateString() . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
+  }
+
+
+  public function test()
+  {
+    return response()->json([
+      'success' => true,
+      'message' => 'Settings updated successfully',
+    ]);
   }
 }

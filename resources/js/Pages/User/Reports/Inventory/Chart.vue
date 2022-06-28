@@ -7,6 +7,23 @@
         <Head title="Inventory Report Pie Chart" />
         <div class="bg-white shadow-lg rounded-md dark:bg-gray-700 p-4">
             <div class="flex gap-2 items-end">
+                <div>
+                    <label
+                        for="countries"
+                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-gray-400"
+                        >Select Type</label
+                    >
+                    <select
+                        v-model="params.type"
+                        id="branches"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    >
+                        <option selected :value="null">All Type</option>
+                        <option value="chicken">Chicken</option>
+                        <option value="pork">Pork</option>
+                        <option value="beef">Beef</option>
+                    </select>
+                </div>
                 <div class="mb-0.5">
                     <Link :href="route('inventory-report-branch.line-chart')">
                         <jet-button> Stocks/ROP Chart </jet-button>
@@ -107,12 +124,18 @@ export default {
             type: Object,
             default: () => {},
         },
+        inventory_report_filter: {
+            type: Object,
+            default: () => {},
+        },
     },
     mounted() {},
     data() {
         return {
             chartType: "doughnut",
-            params: {},
+            params: {
+                type: this.inventory_report_filter.type,
+            },
             chartData: {
                 labels: this.stocks_quantity.map(
                     (item) => item.name + " (" + item.quantity + ")"
@@ -141,10 +164,9 @@ export default {
                 // label position
                 plugins: {
                     legend: {
-                        maxHeight: 50,
                         fullSize: false,
-                        position: "right",
-                        align: "start",
+                        position: "bottom",
+                        align: "center",
                         labels: {
                             usePointStyle: true,
                             boxWidth: 10,
@@ -153,11 +175,16 @@ export default {
                         title: {
                             display: true,
                             text: "PRODUCTS-STOCKS",
+                            padding: {
+                                top: 20,
+                            },
                         },
                     },
                 },
                 layout: {
-                    padding: {},
+                    padding: {
+                        top: 10,
+                    },
                 },
             },
         };
@@ -170,11 +197,15 @@ export default {
             handler: throttle(function () {
                 let params = pickBy(this.params);
 
-                this.$inertia.get(route("inventory-report.chart"), params, {
-                    preserveState: false,
-                    replace: true,
-                    preserveScroll: true,
-                });
+                this.$inertia.get(
+                    route("inventory-report-branch.chart"),
+                    params,
+                    {
+                        preserveState: false,
+                        replace: true,
+                        preserveScroll: true,
+                    }
+                );
             }, 300),
             deep: true,
         },
