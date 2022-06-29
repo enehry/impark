@@ -139,9 +139,10 @@ class IssueProductController extends Controller
     foreach ($request->issueProducts as $issueProduct) {
       $sum_total_price += $issueProduct['total'];
     }
-
+    $uniqueCode = md5(uniqid(rand(), true));
     // create issue
     $issue = Issue::create([
+      'id' => $uniqueCode,
       'user_id' => Auth::user()->id,
       'branch_id' => Auth::user()->branch_id,
       'sum_total_price' => $sum_total_price,
