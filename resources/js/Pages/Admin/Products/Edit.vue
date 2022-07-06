@@ -50,7 +50,7 @@
                     <div class="w-full">
                         <JetLabel
                             for="re-ordering-point"
-                            value="Reordering point"
+                            value="Reordering point(KG)"
                         />
                         <JetInput
                             v-model="form.reordering_point"
@@ -69,7 +69,7 @@
                     <div class="w-full">
                         <JetLabel
                             for="maximum-shelf-life"
-                            value="Maximum shelf life"
+                            value="Maximum shelf life(days)"
                         />
                         <JetInput
                             type="number"

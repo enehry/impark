@@ -1,6 +1,6 @@
 <template>
     <table-layout
-        title="Bill of Materials"
+        title="Update Price"
         note="You can edit
                 the product by clicking the pencil icon, sort by clicking the
                 column header."
@@ -124,10 +124,10 @@
                                 </div>
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3">ROP</th>
+                        <th scope="col" class="px-6 py-3">ROP(KG)</th>
                         <th scope="col" class="px-6 py-3">
                             Maximum <br />
-                            Shelf Life
+                            Shelf Life(days)
                         </th>
                         <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Edit</span>

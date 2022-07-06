@@ -1,6 +1,6 @@
 <template>
-    <table-layout title="Create User">
-        <Head title="Create User" />
+    <table-layout title="Update User">
+        <Head title="Update User" />
         <form
             @submit.prevent="submit"
             class="w-full bg-white shadow-lg rounded-lg p-8 dark:bg-gray-800"

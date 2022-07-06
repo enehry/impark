@@ -94,7 +94,9 @@
                             placeholder="Select date start"
                         />
                     </div>
-                    <span class="mx-4 text-xs text-gray-500 sm:block hidden">to</span>
+                    <span class="mx-4 text-xs text-gray-500 sm:block hidden"
+                        >to</span
+                    >
                     <div class="relative">
                         <div
                             class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none"
@@ -214,7 +216,7 @@
                                 @click.prevent="
                                     sort('planned_orders.order_quantity')
                                 "
-                                >Receivables
+                                >Receivables(KG)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="

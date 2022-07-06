@@ -143,7 +143,7 @@
                             <span
                                 class="flex gap-1 items-center"
                                 @click.prevent="sort('age')"
-                                >Age of Meat in the inventory
+                                >Age of Meat in the inventory(days)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
@@ -164,7 +164,7 @@
                             <span
                                 class="flex gap-1 items-center"
                                 @click.prevent="sort('quantity')"
-                                >Quantity of meat in the inventory
+                                >Quantity of meat in the inventory(kg)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
@@ -183,7 +183,7 @@
                         </th>
                         <th scope="col" class="px-6 py-3">
                             Maximum <br />
-                            Shelf Life
+                            Shelf Life(days)
                         </th>
                         <th scope="col" class="px-6 py-3">Status</th>
                         <th scope="col" class="px-6 py-3 cursor-pointer">

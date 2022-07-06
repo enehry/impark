@@ -46,7 +46,7 @@ defineProps({
             >
                 <CubeIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
-            <MenuTile label="Bill of Materials" routeName="bom.index">
+            <MenuTile label="Update Price" routeName="bom.index">
                 <TagIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
             <MenuTile

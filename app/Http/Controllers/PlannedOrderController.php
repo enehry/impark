@@ -178,7 +178,7 @@ class PlannedOrderController extends Controller
     // log action
     LogHelper::log(
       'converted',
-      Auth::user()->name . ' converted planned orders #' . implode(',', $ids),
+      Auth::user()->name . ' converted ' . count($ids) . ' planned orders  to delivered',
       'planned_orders',
       $ids
     );
@@ -221,7 +221,7 @@ class PlannedOrderController extends Controller
     // log action
     LogHelper::log(
       'cancelled',
-      Auth::user()->name . ' cancelled planned orders #' . implode(',', $ids),
+      Auth::user()->name . ' cancelled planned ' . count($ids) . ' planned orders',
       'planned_orders',
       $ids
     );

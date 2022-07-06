@@ -120,7 +120,7 @@
                                     sort('planned_orders.order_quantity')
                                 "
                                 >Requested <br />
-                                Stocks
+                                Stocks(KG)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="

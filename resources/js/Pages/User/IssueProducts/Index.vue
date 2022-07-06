@@ -105,7 +105,7 @@
                     >
                         <tr>
                             <th scope="col" class="px-6 py-3">Product name</th>
-                            <th scope="col" class="px-6 py-3">Quantity</th>
+                            <th scope="col" class="px-6 py-3">Quantity(kg)</th>
                             <th scope="col" class="px-6 py-3">Unit</th>
                             <th scope="col" class="px-6 py-3">Price</th>
                             <th scope="col" class="px-6 py-3">Total</th>

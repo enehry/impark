@@ -1,6 +1,6 @@
 <template>
     <app-layout>
-        <div class="mx-auto max-w-4xl">
+        <div class="mx-auto max-w-5xl">
             <header-back-btn
                 :title="title"
                 :routeName="backRoute"

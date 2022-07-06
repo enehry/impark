@@ -171,7 +171,7 @@
                             <span
                                 class="flex gap-1"
                                 @click.prevent="sort('quantity')"
-                                >STOCKS
+                                >STOCKS(KG)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
@@ -188,10 +188,10 @@
                                 </div>
                             </span>
                         </th>
-                        <th scope="col" class="px-6 py-3">ROP</th>
+                        <th scope="col" class="px-6 py-3">ROP(KG)</th>
                         <th scope="col" class="px-6 py-3">
                             Maximum <br />
-                            Shelf Life
+                            Shelf Life(Days)
                         </th>
                     </tr>
                 </thead>

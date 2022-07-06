@@ -49,7 +49,7 @@
                     <div class="w-full">
                         <JetLabel
                             for="re-ordering-point"
-                            value="Reordering point"
+                            value="Reordering point(KG)"
                         />
                         <JetInput
                             v-model="form.reordering_point"
@@ -58,7 +58,7 @@
                             "
                             type="number"
                             class="w-full px-4 py-2 rounded-2xl border-2 border-gray-300 dark:border-gray-700"
-                            placeholder="Reordering point"
+                            placeholder="Reordering point(KG)"
                         ></JetInput>
                         <JetInputError
                             v-if="form.errors.reordering_point"
@@ -68,7 +68,7 @@
                     <div class="w-full">
                         <JetLabel
                             for="maximum-shelf-life"
-                            value="Maximum shelf life"
+                            value="Maximum shelf life(days)"
                         />
                         <JetInput
                             type="number"
@@ -153,7 +153,7 @@ export default {
                 name: "",
                 price: "",
                 reordering_point: "50",
-                maximum_shelf_life: "3",
+                maximum_shelf_life: "4",
                 type: "",
             }),
         };
