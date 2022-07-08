@@ -191,7 +191,7 @@
                                 @click.prevent="
                                     sort('planned_orders.order_quantity')
                                 "
-                                >Receivables
+                                >Received(KG)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="

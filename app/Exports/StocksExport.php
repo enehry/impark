@@ -96,8 +96,8 @@ class StocksExport implements
       'PRODUCT NAME',
       'TYPE',
       'PRICE',
-      'QUANTITY',
-      'ROP',
+      'QUANTITY(KG)',
+      'ROP(KG)',
       'KG/DAY',
     ];
   }

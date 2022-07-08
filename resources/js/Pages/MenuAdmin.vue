@@ -31,6 +31,10 @@ defineProps({
         type: Number,
         default: 0,
     },
+    issued_orders_count: {
+        type: Number,
+        default: 0,
+    },
 });
 </script>
 
@@ -64,7 +68,18 @@ defineProps({
             >
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
-
+            <MenuTile
+                label="Issue Orders"
+                :counter="issued_orders_count"
+                routeName="issue-orders.index"
+            >
+                <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
+            </MenuTile>
+            <MenuTile label="Transactions" routeName="transactions.index">
+                <SwitchHorizontalIcon
+                    class="w-12 h-12 text-white dark:text-gray-500"
+                />
+            </MenuTile>
             <MenuTile
                 label="Branches"
                 routeName="branch.index"
@@ -78,11 +93,6 @@ defineProps({
                 routeName="users.index"
             >
                 <UsersIcon class="w-12 h-12 text-white dark:text-gray-500" />
-            </MenuTile>
-            <MenuTile label="Transactions" routeName="transactions.index">
-                <SwitchHorizontalIcon
-                    class="w-12 h-12 text-white dark:text-gray-500"
-                />
             </MenuTile>
             <MenuTile label="Reports" routeName="reports.index">
                 <DocumentReportIcon

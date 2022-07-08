@@ -131,13 +131,13 @@ export default {
                 ),
                 datasets: [
                     {
-                        label: "Stocks",
+                        label: "Stocks(KG)",
                         data: this.stocks_quantity.map((item) => item.quantity),
                         borderColor: "rgb(252,165,165, 0.5)",
                         backgroundColor: ["rgb(239,68,68)"],
                     },
                     {
-                        label: "Reordering Point",
+                        label: "Reordering Point(KG)",
                         data: this.stocks_quantity.map(
                             (item) => item.reordering_point
                         ),

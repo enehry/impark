@@ -139,7 +139,7 @@
                                     class="flex gap-1 items-center cursor-pointer"
                                     @click.prevent="sort('quantity')"
                                     >Current <br />
-                                    Stocks
+                                    Stocks(KG)
                                     <div class="w-4 h-4 cursor-pointer">
                                         <sort-ascending-icon
                                             v-if="
@@ -161,7 +161,7 @@
                                 </span>
                             </th>
                             <th scope="col" class="px-2 py-3">Unit</th>
-                            <th scope="col" class="px-2 py-3">ROP</th>
+                            <th scope="col" class="px-2 py-3">ROP(KG)</th>
                             <th scope="col" class="px-6 py-3">
                                 <span
                                     class="flex gap-1 items-center cursor-pointer"
@@ -192,7 +192,7 @@
                                     class="flex gap-1 items-center cursor-pointer"
                                     @click.prevent="sort('forecast_quantity')"
                                     >Estimated <br />
-                                    Stocks
+                                    Stocks(KG)
                                     <div class="w-4 h-4 cursor-pointer">
                                         <sort-ascending-icon
                                             v-if="

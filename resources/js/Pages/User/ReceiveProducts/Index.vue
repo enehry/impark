@@ -139,7 +139,7 @@
                                 @click.prevent="
                                     sort('planned_orders.order_quantity')
                                 "
-                                >receivables
+                                >receivables(KG)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="
@@ -163,7 +163,7 @@
                         <th scope="col" class="px-6 py-3">Unit</th>
                         <th scope="col" class="px-6 py-3">
                             Estimated time<br />
-                            of arrival
+                            of arrival(Days)
                         </th>
                     </tr>
                 </thead>

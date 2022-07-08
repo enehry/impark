@@ -22,6 +22,7 @@ class PlannedOrderController extends Controller
     $planned_orders = DB::table('planned_orders')
       // get only planned orders that have not been delivered
       ->where('planned_orders.delivered_at', null)
+      ->where('planned_orders.issued_at', null)
       ->where('planned_orders.deleted_at', null)
       // get only specific branch based on $request->branch_id
       ->when(request()->has('branch'), function ($query) {
@@ -121,14 +122,14 @@ class PlannedOrderController extends Controller
     // log action
     LogHelper::log(
       'update',
-      Auth::user()->name . ' updated planned order #' . $plannedOrder->id .
+      Auth::user()->name . ' updated order issue #' . $plannedOrder->id .
         ' from ' . $old_value . ' to ' . $request->quantity,
       'planned_orders',
       [$plannedOrder->id]
     );
 
     // redirect to index
-    return Redirect::back()->banner('Planned order updated successfully');
+    return Redirect::back()->banner('Issue order updated successfully');
   }
 
   /**
@@ -144,17 +145,17 @@ class PlannedOrderController extends Controller
     //log action
     LogHelper::log(
       'permanent deleted',
-      Auth::user()->name . ' permanently deleted planned order #' . $plannedOrder->id,
+      Auth::user()->name . ' permanently deleted issue order #' . $plannedOrder->id,
       'planned_orders',
       [$plannedOrder->id]
     );
 
     $plannedOrder->forceDelete();
     // redirect to index
-    return Redirect::back()->banner('Planned order permanently deleted');
+    return Redirect::back()->banner('Issue order permanently deleted');
   }
 
-  public function deliver(Request $request)
+  public function issue(Request $request)
   {
     // validate array of ids check if id exist on
     // table planned_orders
@@ -171,19 +172,19 @@ class PlannedOrderController extends Controller
     foreach ($ids as $id) {
       PlannedOrder::where('id', $id)
         ->update([
-          'delivered_at' => now(),
+          'issued_at' => now(),
         ]);
     }
 
     // log action
     LogHelper::log(
       'converted',
-      Auth::user()->name . ' converted ' . count($ids) . ' planned orders  to delivered',
+      Auth::user()->name . ' converted ' . count($ids) . ' planned orders  to issued orders',
       'planned_orders',
       $ids
     );
 
-    return Redirect::back()->banner('Planned order(s) converted successfully');
+    return Redirect::route('issue-orders.index')->banner('Planned order(s) converted successfully');
   }
 
   public function trash($id)
@@ -194,12 +195,12 @@ class PlannedOrderController extends Controller
     // log action
     LogHelper::log(
       'move to trash',
-      Auth::user()->name . ' move to trash planned order #' . $id,
+      Auth::user()->name . ' move to trash issue order #' . $id,
       'planned_orders',
       [$id]
     );
 
-    return Redirect::back()->banner('Planned order moved to trash successfully');
+    return Redirect::back()->banner('Issue order moved to trash successfully');
   }
 
   public function cancelAll(Request $request)
@@ -238,11 +239,11 @@ class PlannedOrderController extends Controller
     // log action
     LogHelper::log(
       'restored',
-      Auth::user()->name . ' restored planned order #' . $id,
+      Auth::user()->name . ' restored issue order #' . $id,
       'planned_orders',
       [$id]
     );
-    return Redirect::back()->banner('Planned order restored successfully');
+    return Redirect::back()->banner('Issue order restored successfully');
   }
 
   public function restoreAll(Request $request)
@@ -264,12 +265,12 @@ class PlannedOrderController extends Controller
     // log action
     LogHelper::log(
       'restored',
-      Auth::user()->name . ' restored planned orders #' . implode(',', $ids),
+      Auth::user()->name . ' restored issue orders ' . count($ids),
       'planned_orders',
       $ids
     );
 
-    return Redirect::back()->banner('All planned orders restored successfully');
+    return Redirect::back()->banner('All issue orders restored successfully');
   }
 
   public function allTrashed()
@@ -278,6 +279,7 @@ class PlannedOrderController extends Controller
     $planned_orders = DB::table('planned_orders')
       // get only planned orders that have not been delivered
       ->where('planned_orders.delivered_at', null)
+      ->whereNotNull('planned_orders.issued_at')
       ->where('planned_orders.deleted_at', '!=', null)
       // get only specific branch based on $request->branch_id
       ->when(request()->has('branch_id'), function ($query) {

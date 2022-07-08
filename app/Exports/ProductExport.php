@@ -45,8 +45,8 @@ class ProductExport implements
       'product name' => $stocks->name,
       'product type' => $stocks->type,
       'product price' => $stocks->price,
-      'product quantity' => $stocks->quantity,
-      'product reordering point' =>  $stocks->reordering_point,
+      'product quantity(KG)' => $stocks->quantity,
+      'product reordering point(KG)' =>  $stocks->reordering_point,
       'product default kg per day' => $stocks->default_kg_per_day,
     ];
   }
@@ -58,8 +58,8 @@ class ProductExport implements
       'PRODUCT NAME',
       'TYPE',
       'PRICE',
-      'QUANTITY',
-      'ROP',
+      'QUANTITY(KG)',
+      'ROP(KG)',
       'KG/DAY',
     ];
   }

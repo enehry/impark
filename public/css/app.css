@@ -1724,11 +1724,11 @@ input:checked + .toggle-bg {
 .w-2\/3 {
   width: 66.666667%;
 }
-.w-7 {
-  width: 1.75rem;
-}
 .w-80 {
   width: 20rem;
+}
+.w-7 {
+  width: 1.75rem;
 }
 .w-64 {
   width: 16rem;
@@ -1759,9 +1759,6 @@ input:checked + .toggle-bg {
 }
 .max-w-2xl {
   max-width: 42rem;
-}
-.max-w-4xl {
-  max-width: 56rem;
 }
 .max-w-5xl {
   max-width: 64rem;

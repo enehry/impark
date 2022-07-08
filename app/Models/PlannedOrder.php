@@ -17,6 +17,8 @@ class PlannedOrder extends Model
     'order_quantity',
     'received_quantity',
     'is_received',
+    'issued_at',
+    'delivered_at'
   ];
 
   public function stock()

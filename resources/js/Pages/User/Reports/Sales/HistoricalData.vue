@@ -211,7 +211,7 @@
                                 @click.prevent="sort('sold_quantity')"
                             >
                                 Sold <br />
-                                Quantity
+                                Quantity(Kg)
                                 <div class="w-4 h-4">
                                     <sort-ascending-icon
                                         v-if="

@@ -1,10 +1,10 @@
 <template>
     <table-layout
-        title="Planned Orders Trashed"
-        backRoute="planned-orders.index"
-        note="You can restore all trashed planned orders by clicking the button below,
-        or you can restore individual trashed planned orders by clicking the restore button."
-        ><Head title="Planned Order Trashed" />
+        title="Issue Orders Trashed"
+        backRoute="issue-orders.index"
+        note="You can restore all trashed issue orders by clicking the button below,
+        or you can restore individual trashed issue orders by clicking the restore button."
+        ><Head title="Issue Order Trashed" />
         <tooltip
             id="tooltip-archived-restore"
             label="Restore archived planned orders"
@@ -158,7 +158,7 @@
                 <tbody v-else>
                     <tr class="text-center">
                         <td colspan="7">
-                            <Empty label="Planned orders"> </Empty>
+                            <Empty label="Issue orders"> </Empty>
                         </td>
                     </tr>
                 </tbody>

@@ -24,6 +24,11 @@ class MenuController extends Controller
         $branch_count = Branch::count();
 
         $orders_count = PlannedOrder::where('delivered_at', null)
+          ->where('issued_at', null)
+          ->where('deleted_at', null)->count();
+
+        $issued_orders_count = PlannedOrder::where('delivered_at', null)
+          ->where('issued_at', '!=', null)
           ->where('deleted_at', null)->count();
 
         return Inertia::render('MenuAdmin', [
@@ -32,6 +37,7 @@ class MenuController extends Controller
           'orders_count' => $orders_count,
           'branch_count' => Branch::count(),
           'user_count' => User::count(),
+          'issued_orders_count' => $issued_orders_count,
         ],);
       } else {
         // get user branch
@@ -89,7 +95,8 @@ class MenuController extends Controller
 
 
         // receive products count
-        $receive_count = PlannedOrder::where('delivered_at', "!=", null)
+        $receive_count = PlannedOrder::where('delivered_at', '!=', null)
+          ->where('issued_at', '!=', null)
           ->where('received_at', null)
           ->where('deleted_at', null)
           ->where('branch_id', $branch_id)

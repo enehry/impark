@@ -2,7 +2,7 @@
     <table-layout
         title="Planned Orders"
         note="Planned orders are orders came from the branch forecasting, 
-        you can trash/archived the planned order and restore it to the trashed page."
+        clicking convert will move the product to the issue orders page."
     >
         <Head title="Planned Orders" />
         <tooltip
@@ -68,7 +68,7 @@
                     </select>
                 </div>
             </div>
-            <div class="flex justify-end gap-2 sm:mt-0 mt-2">
+            <!-- <div class="flex justify-end gap-2 sm:mt-0 mt-2">
                 <Link :href="route('planned-orders.all-trashed')">
                     <button
                         data-tooltip-target="tooltip-archived-orders"
@@ -77,7 +77,7 @@
                         <trash-icon class="w-4 h-4" />
                     </button>
                 </Link>
-            </div>
+            </div> -->
         </div>
         <div class="relative overflow-x-auto shadow-md sm:rounded-b-lg w-full">
             <table
@@ -157,10 +157,10 @@
                             </span>
                         </th>
                         <th scope="col" class="px-6 py-3">Date</th>
-                        <th scope="col" class="px-6 py-3">
+                        <!-- <th scope="col" class="px-6 py-3">
                             <span class="sr-only">Edit</span>
                             <span class="sr-only">Delete</span>
-                        </th>
+                        </th> -->
                     </tr>
                 </thead>
                 <tbody v-if="hasData">
@@ -182,13 +182,10 @@
                 </tbody>
             </table>
         </div>
-        <div
-            v-if="hasData"
-            class="pb-20 pt-8 flex justify-between items center"
-        >
-            <jet-button @click="showConfirmationDialog('cancel')">
+        <div v-if="hasData" class="pb-20 pt-8 flex justify-end items center">
+            <!-- <jet-button @click="showConfirmationDialog('cancel')">
                 Cancel All
-            </jet-button>
+            </jet-button> -->
             <div class="flex gap-4">
                 <jet-button @click="showConfirmationDialog('selected')">
                     Convert Selected

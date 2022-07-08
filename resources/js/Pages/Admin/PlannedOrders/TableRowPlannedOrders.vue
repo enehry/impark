@@ -41,7 +41,7 @@
         <td class="px-6 py-4">
             {{ date }}
         </td>
-        <td class="px-6 py-4 flex gap-4 justify-end items-center">
+        <!-- <td class="px-6 py-4 flex gap-4 justify-end items-center">
             <div class="flex items-center">
                 <button
                     v-if="isEditMode"
@@ -65,7 +65,7 @@
             >
                 <trash-icon class="w-4 h-5"></trash-icon>
             </button>
-        </td>
+        </td> -->
     </tr>
 </template>
 

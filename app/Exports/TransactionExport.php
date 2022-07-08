@@ -62,7 +62,7 @@ class TransactionExport implements
       'BRANCH NAME',
       'PRODUCT NAME',
       'TYPE',
-      'QUANTITY',
+      'QUANTITY(KG)',
       'DATE DELIVERED',
       'DATE RECEIVED'
     ];

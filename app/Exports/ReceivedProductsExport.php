@@ -60,7 +60,7 @@ class ReceivedProductsExport implements
       'ID',
       'PRODUCT NAME',
       'TYPE',
-      'QUANTITY',
+      'QUANTITY(KG)',
       'DATE DELIVERED',
       'DATE RECEIVED'
     ];

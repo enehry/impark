@@ -10,6 +10,7 @@ class Issue extends Model
   use HasFactory;
 
   protected $fillable = [
+    'id',
     'user_id',
     'branch_id',
     'sum_total_price',

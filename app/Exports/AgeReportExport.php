@@ -58,9 +58,9 @@ class AgeReportExport implements
       'ID',
       'BRANCH',
       'PRODUCT NAME',
-      'AGE OF MEAT IN THE INVENTORY',
-      'QUANTITY OF MEAT IN THE INVENTORY',
-      'MAXIMUM SHELF LIFE',
+      'AGE OF MEAT IN THE INVENTORY(D)',
+      'QUANTITY OF MEAT IN THE INVENTORY(KG)',
+      'MAXIMUM SHELF LIFE(D)',
       'STATUS',
       'DATE RECEIVED',
     ];
@@ -70,7 +70,7 @@ class AgeReportExport implements
 
   public function styles(Worksheet $sheet)
   {
-    $sheet->getColumnDimension('B')->setWidth(12);
+    $sheet->getColumnDimension('B')->setWidth(8);
     // text wrap all rows
     $sheet->getStyle('A1:H1')->getAlignment()->setWrapText(true);
     $sheet->getColumnDimension('C')->setWidth(20);
@@ -78,7 +78,7 @@ class AgeReportExport implements
     $sheet->getColumnDimension('E')->setWidth(10);
     $sheet->getColumnDimension('G')->setWidth(10);
     $sheet->getStyle('G')->getAlignment()->setWrapText(true);
-    $sheet->getColumnDimension('H')->setWidth(20);
+    $sheet->getColumnDimension('H')->setWidth(15);
     $sheet->getStyle('A')
       ->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
     $sheet->getStyle($sheet->calculateWorksheetDimension())

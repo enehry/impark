@@ -18,6 +18,7 @@ use App\Http\Controllers\SalesReportController;
 use App\Http\Controllers\UserLogController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\IssueOrderController;
 use Inertia\Inertia;
 
 /*
@@ -36,15 +37,12 @@ Route::get('/', function () {
 });
 
 
-
 Route::middleware([
   'auth:sanctum',
   config('jetstream.auth_session'),
   'verified',
 ])->group(function () {
   Route::get('/', [MenuController::class, 'index'])->name('Menu');
-
-
 
   Route::middleware('admin')->group(function () {
 
@@ -63,7 +61,7 @@ Route::middleware([
     // planned orders
     Route::resource('/planned-orders', PlannedOrderController::class);
     Route::delete('/planned-orders-delete/{id}', [PlannedOrderController::class, 'delete'])->name('planned-orders.delete');
-    Route::post('/planned-orders-convert', [PlannedOrderController::class, 'deliver'])->name('planned-orders.convert');
+    Route::post('/planned-orders-convert', [PlannedOrderController::class, 'issue'])->name('planned-orders.convert');
     Route::delete('/planned-orders-trash/{id}', [PlannedOrderController::class, 'trash'])->name('planned-orders.trash');
     Route::post('/planned-orders-cancel-all', [PlannedOrderController::class, 'cancelAll'])->name('planned-orders.cancel-all');
     Route::get('/planned-orders-all-trashed', [PlannedOrderController::class, 'allTrashed'])->name('planned-orders.all-trashed');
@@ -80,6 +78,11 @@ Route::middleware([
     Route::get('/transactions-download-pdf', [TransactionController::class, 'downloadPDF'])->name('transactions.download-pdf');
 
     Route::post('bypass-forecasting', [ForecastingController::class, 'bypassNextDay'])->name('forecasting.bypass');
+
+    // Issue Orders
+    Route::get('issue-orders', [IssueOrderController::class, 'index'])->name('issue-orders.index');
+    Route::post('issue-orders', [IssueOrderController::class, 'proceed'])->name('issue-orders.proceed');
+
     // reports
     Route::get('reports', [ReportController::class, 'index'])->name('reports.index');
     // Inventory reports

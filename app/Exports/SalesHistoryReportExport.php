@@ -64,7 +64,7 @@ class SalesHistoryReportExport implements
       'ID',
       'PRODUCT NAME',
       'TYPE',
-      'SOLD QUANTITY',
+      'SOLD QUANTITY(KG)',
       'PRICE',
       'TOTAL SALES',
       'DATE'
