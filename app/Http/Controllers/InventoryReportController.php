@@ -6,6 +6,7 @@ use App\Exports\ProductExport;
 use App\Models\Branch;
 use App\Models\Product;
 use App\Models\Stock;
+use App\Models\WarehouseStock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -26,26 +27,39 @@ class InventoryReportController extends Controller
       'type' => 'in:pork,beef,chicken',
     ]);
 
-    $query =
-      Product::select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
-      ->join('stocks', 'products.id', '=', 'stocks.product_id')
-      ->groupBy('products.id')
-      ->when($request->has('search'), function ($query) use ($request) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-      })
-      ->when($request->has('branch'), function ($query) use ($request) {
-        $query->where('stocks.branch_id', $request->branch);
-      })
-      ->when($request->has('type'), function ($query) use ($request) {
-        $query->where('products.type', $request->type);
-      })
-      ->when($request->has('field'), function ($query) use ($request) {
-        $query->orderBy($request->field, $request->direction);
-      })->paginate(20)->withQueryString();
-
+    if ($request->branch === 'warehouse') {
+      $query = WarehouseStock::join('products', 'products.id', '=', 'warehouse_stocks.product_id')
+        ->select('products.*', 'warehouse_stocks.quantity')
+        ->when($request->has('search'), function ($query) use ($request) {
+          $query->where('products.name', 'like', '%' . $request->search . '%');
+        })
+        ->when($request->has('type'), function ($query) use ($request) {
+          $query->where('products.type', $request->type);
+        })
+        ->when($request->has('field'), function ($query) use ($request) {
+          $query->orderBy($request->field, $request->direction);
+        });
+    } else {
+      $query =
+        Product::select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+        ->join('stocks', 'products.id', '=', 'stocks.product_id')
+        ->groupBy('products.id')
+        ->when($request->has('search'), function ($query) use ($request) {
+          $query->where('name', 'like', '%' . $request->search . '%');
+        })
+        ->when($request->has('branch'), function ($query) use ($request) {
+          $query->where('stocks.branch_id', $request->branch);
+        })
+        ->when($request->has('type'), function ($query) use ($request) {
+          $query->where('products.type', $request->type);
+        })
+        ->when($request->has('field'), function ($query) use ($request) {
+          $query->orderBy($request->field, $request->direction);
+        });
+    }
 
     return Inertia::render('Admin/Reports/Inventory/Index', [
-      'stocks' => $query,
+      'stocks' =>  $query->paginate(20)->withQueryString(),
       'inventory_branches' => Branch::All(['id', 'name']),
       'inventory_filter' => request()->all(['branch_id', 'search', 'field', 'direction', 'type']),
     ]);
@@ -53,22 +67,30 @@ class InventoryReportController extends Controller
 
   public function chart()
   {
-    $stocks =
-      Stock::select(
-        'products.name as name',
-        DB::raw('SUM(quantity) as quantity')
-      )
-      ->when(request('branch_id'), function ($query) {
-        return $query->where('branch_id', request('branch_id'));
-      })
-      ->when(request('type'), function ($query) {
-        return $query->where('products.type', request('type'));
-      })
-      ->groupBy('product_id')
-      ->join('products', 'products.id', '=', 'stocks.product_id')
-      ->get();
-
-
+    if (request('branch_id') === 'warehouse') {
+      $stocks = WarehouseStock::join('products', 'products.id', '=', 'warehouse_stocks.product_id')
+        ->select('products.*', 'warehouse_stocks.quantity')
+        ->when(request('type'), function ($query) {
+          return $query->where('products.type', request('type'));
+        })
+        ->orderBy('products.name', 'asc')
+        ->get();
+    } else {
+      $stocks =
+        Stock::select(
+          'products.name as name',
+          DB::raw('SUM(quantity) as quantity')
+        )
+        ->when(request('branch_id'), function ($query) {
+          return $query->where('branch_id', request('branch_id'));
+        })
+        ->when(request('type'), function ($query) {
+          return $query->where('products.type', request('type'));
+        })
+        ->groupBy('product_id')
+        ->join('products', 'products.id', '=', 'stocks.product_id')
+        ->get();
+    }
 
     return Inertia::render('Admin/Reports/Inventory/Chart', [
       'stocks_quantity' => $stocks,
@@ -109,7 +131,11 @@ class InventoryReportController extends Controller
   {
     $branch = null;
     if ($request->has('branch')) {
-      $branch = Branch::find($request->branch)->name;
+      if ($request->branch === 'warehouse') {
+        $branch = 'Warehouse';
+      } else {
+        $branch = Branch::find($request->branch)->name;
+      }
     }
 
     // download in excel format
@@ -120,7 +146,11 @@ class InventoryReportController extends Controller
   {
     $branch = null;
     if ($request->has('branch')) {
-      $branch = Branch::find($request->branch)->name;
+      if ($request->branch === 'warehouse') {
+        $branch = 'Warehouse';
+      } else {
+        $branch = Branch::find($request->branch)->name;
+      }
     }
 
     return Excel::download(new ProductExport($this->data($request), $branch), 'stocks-' . now()->toDateString() . '.pdf', \Maatwebsite\Excel\Excel::DOMPDF);
@@ -131,31 +161,60 @@ class InventoryReportController extends Controller
     $request->validate([
       'direction' => 'in:asc,desc',
       'field' => 'in:name,price,type,quantity',
-      'branch_id' =>  'numeric|exists:branches,id',
+      // 'branch_id' =>  'numeric|exists:branches,id',
       'type' => 'in:pork,beef,chicken',
     ]);
 
-    $query =
-      DB::table('products')
-      ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
-      ->join('stocks', 'products.id', '=', 'stocks.product_id')
-      ->groupBy('products.id')
-      ->when($request->has('search'), function ($query) use ($request) {
-        $query->where('name', 'like', '%' . $request->search . '%');
-      })
-      ->when($request->has('branch'), function ($query) use ($request) {
-        $query->where('stocks.branch_id', $request->branch);
-      })
-      ->when($request->has('type'), function ($query) use ($request) {
-        $query->where('products.type', $request->type);
-      })
-      ->when($request->has('field'), function ($query) use ($request) {
-        $query->orderBy($request->field, $request->direction);
-      })->get();
+    if ($request->branch === 'warehouse') {
+      $query = WarehouseStock::join('products', 'products.id', '=', 'warehouse_stocks.product_id')
+        ->select('products.*', 'warehouse_stocks.quantity')
+        ->when($request->has('search'), function ($query) use ($request) {
+          $query->where('products.name', 'like', '%' . $request->search . '%');
+        })
+        ->when($request->has('type'), function ($query) use ($request) {
+          $query->where('products.type', $request->type);
+        })
+        ->when($request->has('field'), function ($query) use ($request) {
+          $query->orderBy($request->field, $request->direction);
+        });
+    } else {
+      $query =
+        Product::select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+        ->join('stocks', 'products.id', '=', 'stocks.product_id')
+        ->groupBy('products.id')
+        ->when($request->has('search'), function ($query) use ($request) {
+          $query->where('name', 'like', '%' . $request->search . '%');
+        })
+        ->when($request->has('branch'), function ($query) use ($request) {
+          $query->where('stocks.branch_id', $request->branch);
+        })
+        ->when($request->has('type'), function ($query) use ($request) {
+          $query->where('products.type', $request->type);
+        })
+        ->when($request->has('field'), function ($query) use ($request) {
+          $query->orderBy($request->field, $request->direction);
+        });
+    }
 
+    // $query =
+    //   DB::table('products')
+    //   ->select('products.*', DB::raw('sum(stocks.quantity) as quantity'))
+    //   ->join('stocks', 'products.id', '=', 'stocks.product_id')
+    //   ->groupBy('products.id')
+    //   ->when($request->has('search'), function ($query) use ($request) {
+    //     $query->where('name', 'like', '%' . $request->search . '%');
+    //   })
+    //   ->when($request->has('branch'), function ($query) use ($request) {
+    //     $query->where('stocks.branch_id', $request->branch);
+    //   })
+    //   ->when($request->has('type'), function ($query) use ($request) {
+    //     $query->where('products.type', $request->type);
+    //   })
+    //   ->when($request->has('field'), function ($query) use ($request) {
+    //     $query->orderBy($request->field, $request->direction);
+    //   })->get();
 
-
-    return $query;
+    return $query->get();
   }
 
   // for branch inventory report
@@ -177,8 +236,6 @@ class InventoryReportController extends Controller
       ->when($request->has('search'), function ($query) use ($request) {
         $query->where('name', 'like', '%' . $request->search . '%');
       })
-
-
       ->when($request->has('type'), function ($query) use ($request) {
         $query->where('products.type', $request->type);
       })

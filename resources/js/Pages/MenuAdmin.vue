@@ -63,15 +63,15 @@ defineProps({
                 />
             </MenuTile>
             <MenuTile
-                label="Distribute Receivables"
-                routeName="distribute-receivables.index"
+                label="Issue Orders"
+                :counter="issued_orders_count"
+                routeName="issue-orders.index"
             >
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>
             <MenuTile
-                label="Issue Orders"
-                :counter="issued_orders_count"
-                routeName="issue-orders.index"
+                label="Distribute Receivables"
+                routeName="distribute-receivables.index"
             >
                 <TruckIcon class="w-12 h-12 text-white dark:text-gray-500" />
             </MenuTile>

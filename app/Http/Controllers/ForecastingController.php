@@ -73,7 +73,7 @@ class ForecastingController extends Controller
           'IF(forecast_settings.default_kg_per_day IS NULL, 
           products.default_kg_per_day, 
           forecast_settings.default_kg_per_day) 
-          * products.maximum_shelf_life as forecast_quantity'
+          * 3 as forecast_quantity'
         )
       )
       ->where(

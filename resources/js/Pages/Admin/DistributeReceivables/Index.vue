@@ -35,6 +35,7 @@
                         >
                             {{ branch.name }}
                         </option>
+                        <option value="warehouse">Warehouse</option>
                     </select>
                 </div>
                 <div class="w-full">
@@ -308,15 +309,15 @@ export default {
         },
         onAddProduct() {
             // check if product is already added
-            if (
-                this.addedDistributeReceivables.find(
-                    (product) => product.id == this.selectedProduct.id
-                )
-            ) {
-                this.error.title = "Product already added!";
-                this.error.message = "You have already added this product";
-                return;
-            }
+            // if (
+            //     this.addedDistributeReceivables.find(
+            //         (product) => product.id == this.selectedProduct.id
+            //     )
+            // ) {
+            //     this.error.title = "Product already added!";
+            //     this.error.message = "You have already added this product";
+            //     return;
+            // }
             if (!(this.selectedProduct.id && this.quantity)) {
                 this.error.title = "Error empty fields!";
                 this.error.message =
@@ -330,15 +331,21 @@ export default {
                 return;
             }
 
+            const branch_name =
+                this.selectedBranch === "warehouse"
+                    ? "warehouse"
+                    : this.admin_branch_dropdown.find(
+                          (branch) => branch.id == this.selectedBranch
+                      ).name;
+
             this.addedDistributeReceivables.push({
                 id: this.selectedProduct.id,
                 name: this.selectedProduct.name,
                 quantity: this.quantity,
+                product_id: this.selectedProduct.product_id,
                 price: this.selectedProduct.price,
                 total: this.quantity * this.selectedProduct.price,
-                branch_name: this.admin_branch_dropdown.find(
-                    (branch) => branch.id == this.selectedBranch
-                ).name,
+                branch_name: branch_name,
                 branch_id: this.selectedBranch,
             });
             this.quantity = 0;

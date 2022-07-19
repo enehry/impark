@@ -18,7 +18,7 @@ return new class extends Migration
       $table->integer('total_price');
       $table->integer('sold_quantity');
       $table->unsignedBigInteger('stock_id');
-      $table->unsignedBigInteger('issue_id');
+      $table->string('issue_id');
       $table->timestamps();
     });
   }

@@ -340,9 +340,9 @@ export default {
             this.type = type;
             if (type === "cancel") {
                 this.message.title =
-                    "Are you sure you want to cancel all planned orders?";
+                    "Are you sure you want to cancel all issue orders?";
                 this.message.content =
-                    "Cancelled planned orders will be moved to trash and branch cannot forecast the trashed product," +
+                    "Cancelled issue orders will be moved to trash and branch cannot forecast the trashed product," +
                     " you need to delete it permanently in order the branch can forecast it again.";
                 this.isShow = true;
             } else if (type === "all") {
@@ -435,7 +435,7 @@ export default {
             handler: throttle(function () {
                 let params = pickBy(this.planned_orders_params);
 
-                this.$inertia.get(this.route("planned-orders.index"), params, {
+                this.$inertia.get(this.route("issue-orders.index"), params, {
                     preserveState: true,
                     replace: true,
                     preserveScroll: true,

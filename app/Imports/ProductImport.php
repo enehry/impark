@@ -23,8 +23,8 @@ class ProductImport implements WithValidation, WithHeadingRow, ToModel
         'name' => $row['product_name'],
         'type' => strtolower($row['type']),
         'price' => $row['price'],
-        'default_kg_per_day' => $row['kg_per_day'] ?? 20,
-        'reordering_point' => round(($row['kg_per_day'] ?? 20 * 4) + ($row['kg_per_day'] ?? 20 / 4)),
+        'default_kg_per_day' => $row['kg_per_day'],
+        'reordering_point' => ceil(($row['kg_per_day'] * 3) + ($row['kg_per_day'] / 3)),
       ]
     );
 

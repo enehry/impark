@@ -139,7 +139,7 @@ class IssueProductController extends Controller
     foreach ($request->issueProducts as $issueProduct) {
       $sum_total_price += $issueProduct['total'];
     }
-    $uniqueCode = md5(uniqid(rand(), true));
+    $uniqueCode = md5(uniqid(true));
     // create issue
     $issue = Issue::create([
       'id' => $uniqueCode,
@@ -156,7 +156,7 @@ class IssueProductController extends Controller
           'total_price' => $issueProduct['total'],
           'sold_quantity' => $issueProduct['quantity'],
           'stock_id' => $issueProduct['id'],
-          'issue_id' => $issue->id,
+          'issue_id' => $uniqueCode,
         ]);
 
         // reduce stocks quantity

@@ -26,6 +26,7 @@
                         >
                             {{ branch.name }}
                         </option>
+                        <option value="warehouse">Warehouse</option>
                     </select>
                 </div>
 

@@ -14,7 +14,7 @@ return new class extends Migration
   public function up()
   {
     Schema::create('issues', function (Blueprint $table) {
-      $table->id();
+      $table->string('id')->primary();
       $table->unsignedBigInteger('user_id');
       $table->unsignedBigInteger('branch_id');
       $table->decimal('sum_total_price');
